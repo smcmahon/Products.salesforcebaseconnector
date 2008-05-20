@@ -1,0 +1,14 @@
+==========
+TODO ITEMS
+==========
+
+Pre-beta:
+
+[ ] Add 2 additional Zope permissions:
+        read -- ISalesforceBaseConnectorInfo 
+        write -- ISalesforceBaseConnector 
+[ ] Figure out where (i.e. base connector or beatbox) whitespace is being normalized 
+    when retrieved from Salesforce.com
+[X] Better docstrings for all methods defined in the interfaces
+[X] Test for setBatchSize()
+    
