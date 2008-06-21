@@ -1,7 +1,7 @@
 ## Python imports
 import logging
-from beatbox import PythonClient as SalesforceClient
-from beatbox import SessionTimeoutError
+from pyax.connection import Connection
+from pyax.exceptions import NoConnectionError
 
 ## Zope imports
 from zope.interface import implements
@@ -52,14 +52,13 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('logging into salesforce...')
         username = self._username
         passwd = self._password
-        res = self._v_sfclient.login(username, passwd)
+        res = Connection.connect(username, passwd)
         return res
     
     def _areValidCredentials(self, username, passwd):
         logger.debug('testing new user credentials...')
         try:
-            testClient = SalesforceClient()
-            testClient.login(username,passwd)
+            testClient = Connection.connect(username,passwd)
             return True
         except:
             return False
@@ -67,12 +66,12 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     def _getClient(self):
         logger.debug('calling _getClient')
         if not hasattr(self, '_v_sfclient') or self._v_sfclient is None:
-            self._v_sfclient = SalesforceClient()
-        if not self._v_sfclient.isConnected():
-            logger.debug('No open connection to Salesforce. Trying to log in...')
-            response = self._login()
-            if not response:
-                raise "Salesforce login failed"
+            self._v_sfclient = self._login()
+        # if not self._v_sfclient.isConnected():
+        #     logger.debug('No open connection to Salesforce. Trying to log in...')
+        #     response = self._login()
+        #     if not response:
+        #         raise "Salesforce login failed"
         return self._v_sfclient 
 
     def _resetClient(self):
@@ -106,7 +105,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         """Set the batchsize used by query and queryMore"""
         try:
             self._getClient().batchSize = batchsize
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             self._getClient().batchSize = batchsize
     
@@ -147,21 +146,21 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     
     ## Accessors
     security.declarePublic('query')
-    def query(self, fieldList, sObjectType, whereClause=''):
+    def query(self, statement):
         """See .interfaces.salesforcebaseconnector
         """
         logger.debug('calling query()')
-        if sObjectType is None:
-            raise ValueError, "Invalid argument: sObjectType must not be None"
-        if not fieldList:
-            raise ValueError, "Invalid argument: must pass list of desired fields"
+        # if sObjectType is None:
+        #     raise ValueError, "Invalid argument: sObjectType must not be None"
+        # if not fieldList:
+        #     raise ValueError, "Invalid argument: must pass list of desired fields"
             
-        fieldString = ','.join(fieldList)
+        # fieldString = ','.join(fieldList)
         try:
-            result = self._getClient().query(fieldString, sObjectType, whereClause)
-        except SessionTimeoutError:
+            result = self._getClient().query(statement)
+        except NoConnectionError:
             self._resetClient()
-            result = self._getClient().query(fieldString, sObjectType, whereClause)
+            result = self._getClient().query(statement)
             
         return result
     
@@ -172,7 +171,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling describeGlobal')
         try:
             result = self._getClient().describeGlobal()
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().describeGlobal()
         
@@ -185,7 +184,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling describeSObjects')
         try:
             result = self._getClient().describeSObjects(sObjectTypes)
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().describeSObjects(sObjectTypes)
         
@@ -198,7 +197,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling queryMore')
         try:
             result = self._getClient().queryMore(queryLocator)
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().queryMore(queryLocator)
         
@@ -214,7 +213,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
             fieldString = ','.join(fields)
         try:
             result = self._getClient().retrieve(fieldString, sObjectType, ids)
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().retrieve(fieldString, sObjectType, ids)
         
@@ -227,7 +226,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling getDeleted')
         try:
             result = self._getClient().getDeleted(sObjectType, start, end)
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().getDeleted(sObjectType, start, end)
         
@@ -240,7 +239,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling getUpdated')
         try:
             result = self._getClient().getUpdated(sObjectType, start, end)
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().getUpdated(sObjectType, start, end)
         
@@ -253,7 +252,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling getUserInfo')
         try:
             result = self._getClient().getUserInfo()
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().getUserInfo()
         
@@ -266,7 +265,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling describeTabs')
         try:
             result = self._getClient().describeTabs()
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().describeTabs()
         
@@ -275,15 +274,15 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
 
     ## Mutators
     security.declareProtected(ManagePortal, 'create')    
-    def create(self, sObjects):
+    def create(self, sObjectType, sObjects):
         """See .interfaces.salesforcebaseconnector
         """
         logger.debug('calling create')
         try:
-            result = self._getClient().create(sObjects)
-        except SessionTimeoutError:
+            result = self._getClient().create(sObjectType, sObjects)
+        except NoConnectionError:
             self._resetClient()
-            result = self._getClient().create(sObjects)
+            result = self._getClient().create(sObjectType, sObjects)
         
         return result
         
@@ -294,7 +293,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling update')
         try:
             result = self._getClient().update(sObjects)
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().update(sObjects)
         
@@ -307,7 +306,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling upsert')
         try:
             result = self._getClient().upsert(externalIdName, sObjects)
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().upsert(externalIdName, sObjects)
         
@@ -320,7 +319,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         logger.debug('calling delete')
         try:
             result = self._getClient().delete(ids)
-        except SessionTimeoutError:
+        except NoConnectionError:
             self._resetClient()
             result = self._getClient().delete(ids)
         

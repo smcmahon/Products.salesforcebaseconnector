@@ -76,33 +76,30 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
     def test_query(self):
         """Test a very basic query with a condition (a "where" clause)"""
         svc = self.toolbox
-        data = dict(type='Contact',
+        data = dict(
             LastName='Doe',
             FirstName='John',
             Phone='123-456-7890',
             Email='john@doe.com',
             Birthdate = datetime.date(1970, 1, 4)
             )
-        res = svc.create([data])
+        res = svc.create('Contact', [data])
         self._todelete.append(res[0]['id'])
-        data2 = dict(type='Contact',
+        data2 = dict(
                     LastName='Doe',
                     FirstName='Jane',
                     Phone='123-456-7890',
                     Email='jane@doe.com',
                     Birthdate = datetime.date(1972, 10, 15)
                     )
-        res = svc.create([data2])
+        res = svc.create('Contact', [data2])
         janeid = res[0]['id']
         self._todelete.append(janeid)
-        res = svc.query(['LastName', 'FirstName', 'Phone', 'Email', 'Birthdate'],
-                         'Contact',
-                         "LastName = 'Doe'")
-        self.assertEqual(res['size'], 2)
-        res = svc.query(['Id', 'LastName', 'FirstName', 'Phone', 'Email', 'Birthdate'],
-                         'Contact', "LastName = 'Doe' and FirstName = 'Jane'")
-        self.assertEqual(res['size'], 1)
-        self.assertEqual(res['records'][0]['Id'], janeid)
+        res = svc.query("SELECT Id, LastName, FirstName, Phone, Email, Birthdate FROM Contact WHERE LastName = 'Doe'")
+        self.assertEqual(len(res.items()), 2)
+        res = svc.query("SELECT Id, LastName, FirstName, Phone, Email, Birthdate FROM Contact WHERE LastName = 'Doe' and FirstName = 'Jane'")
+        self.assertEqual(len(res.items()), 1)
+        self.assertEqual(res.has_key(janeid))
 
     def test_queryRaisesWithNoSFObjectType(self):
         svc = self.toolbox
@@ -116,29 +113,26 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
         """Test that we can retrieve records based on a 
            list-type field being non-empty."""
         svc = self.toolbox
-        data = dict(type='Contact',
+        data = dict(
             LastName='Doe',
             FirstName='John',
             Favorite_Fruit__c=['Pears',]
             )
-        res = svc.create([data])
+        res = svc.create('Contact',[data])
         johnid = res[0]['id']
         self._todelete.append(johnid)
-        data2 = dict(type='Contact',
+        data2 = dict(
                     LastName='Doe',
                     FirstName='Jane',
                     )
-        res = svc.create([data2])
+        res = svc.create('Contact', [data2])
         janeid = res[0]['id']
         self._todelete.append(janeid)
-        res = svc.query(['LastName', 'FirstName', 'Phone', 'Favorite_Fruit__c'],
-                         'Contact',
-                         "LastName = 'Doe'")
-        self.assertEqual(res['size'], 2)
-        res = svc.query(['Id', 'LastName', 'FirstName', 'Favorite_Fruit__c'],
-                         'Contact', "LastName = 'Doe' and Favorite_Fruit__c!=''")
-        self.assertEqual(res['size'], 1)
-        self.assertEqual(res['records'][0]['Id'], johnid)
+        res = svc.query("SELECT Id, LastName, FirstName, Favorite_Fruit__c FROM Contact WHERE LastName = 'Doe'")
+        self.assertEqual(len(res.items()), 2)
+        res = svc.query("SELECT Id, LastName, FirstName, Favorite_Fruit__c FROM Contact WHERE LastName = 'Doe' and Favorite_Fruit__c != ''")
+        self.assertEqual(len(res.items()), 1)
+        self.failUnless(res.has_key(johnid))
         
     def test_update(self):
         """Create a record, retrieve it, update a field, 
@@ -148,14 +142,14 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
         originaldate = datetime.date(1970, 1, 4)
         newdate = datetime.date(1970, 1, 5)
         lastname = 'Doe'
-        data = dict(type='Contact',
+        data = dict(
                     LastName=lastname,
                     FirstName='John',
                     Phone='123-456-7890',
                     Email='john@doe.com',
                     Birthdate=originaldate
                     )
-        res = svc.create([data])
+        res = svc.create('Contact', [data])
         id = res[0]['id']
         self._todelete.append(id)
         contacts = svc.retrieve(['LastName', 'Birthdate'], 'Contact', [id])
