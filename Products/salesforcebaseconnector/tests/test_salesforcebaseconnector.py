@@ -73,7 +73,7 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
                 ids = ids[200:]
             self.toolbox.delete(ids)
 
-    def test_query(self):
+    def test_query123(self):
         """Test a very basic query with a condition (a "where" clause)"""
         svc = self.toolbox
         data = dict(
@@ -99,7 +99,7 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
         self.assertEqual(len(res.items()), 2)
         res = svc.query("SELECT Id, LastName, FirstName, Phone, Email, Birthdate FROM Contact WHERE LastName = 'Doe' and FirstName = 'Jane'")
         self.assertEqual(len(res.items()), 1)
-        self.assertEqual(res.has_key(janeid))
+        self.failUnless(res.has_key(janeid))
 
     def test_queryRaisesWithNoSFObjectType(self):
         svc = self.toolbox
