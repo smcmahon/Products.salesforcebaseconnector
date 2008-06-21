@@ -58,15 +58,11 @@ class ISalesforceBaseConnectorInfo(Interface):
          'urlNew': 'https://na1.salesforce.com/003/e'}
         '''
         
-    def query(fields, sObjectType, conditionExpression=''):
+    def query(statement):
         """Run a SoQL query against a Salesforce instance, and returns
         a dict as a result set.
         >>> sbc = portal.portal_salesforcebaseconnector 
-        >>> sbc.query(['FirstName',],'Contact',"FirstName='Stella'")
-        {'records': [{'Id': '0037000000TAERdAAP', 'UserName__c': 'joe'}],
-         'done': True, 
-         'queryLocator': <beatbox.python_client.QueryLocator object at ...>, 
-         'size': 1}
+        >>> sbc.query("SELECT FirstName FROM Contact WHERE FirstName = 'Stella'")
         """
         
     def queryMore(queryLocator):
@@ -158,17 +154,15 @@ class ISalesforceBaseConnector(ISalesforceBaseConnectorInfo):
         >>> sbc.setBatchSize(500)
         '''
         
-    def create(sObjects):
+    def create(sObjectType, sObjects):
         '''Create record(s) in Salesforce from one or more dicts:
-        >>> obj = dict(type='Contact',
-                       LastName='Doe',
+        >>> obj = dict(LastName='Doe',
                        FirstName='John',
                        Phone='123-456-7890',
                        Email='john@doe.com',
                        Birthdate = datetime.date(1970, 1, 4)
                        )
-        >>> sbc.create(obj)
-        [{'errors': [], 'id': '0033000000QXZfmAAH', 'success': True}]
+        >>> sbc.create('Contact', obj)
         '''
         
     def update(sObjects):
