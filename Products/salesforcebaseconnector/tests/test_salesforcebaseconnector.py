@@ -166,29 +166,33 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
     def test_queryMore(self):
         """docstring for test_queryMore"""
         svc = self.toolbox
-        svc.setBatchSize(100)
+        
+        # lower the batch sizes
+        cnx = svc._getClient()
+        cnx.context._Context__batch_size = 200
+        
+        # prepare to create contacts
         data = list()
         for x in range(250):
-            data.append(dict(type='Contact',
+            data.append(dict(
                             LastName='Doe',
                             FirstName='John',
                             Phone='123-456-7890',
                             Email='john@doe.com',
                             Birthdate = datetime.date(1970, 1, 4)
                             ))
-        res = svc.create(data[:200])
+        res = svc.create('Contact', data[:200])
         ids = [x['id'] for x in res]
         self._todelete.extend(ids)
-        res = svc.create(data[200:])
+        res = svc.create('Contact', data[200:])
         ids = [x['id'] for x in res]
         self._todelete.extend(ids)
-        res = svc.query(['LastName', 'FirstName', 'Phone', 'Email', 'Birthdate'],
-                         'Contact', "LastName = 'Doe'")
-        self.failUnless(not res['done'])
-        self.assertEqual(len(res['records']), 200)
-        res = svc.queryMore(res['queryLocator'])
-        self.failUnless(res['done'])
-        self.assertEqual(len(res['records']), 50)
+        res = svc.query("SELECT Id, LastName, FirstName, Phone, Email, Birthdate FROM Contact WHERE LastName = 'Doe'")
+        self.failUnless(res.query_locator)
+        self.assertEqual(len(res.items()), 200)
+        res = svc.queryMore(res.query_locator)
+        self.failIf(res.query_locator)
+        self.assertEqual(len(res.items()), 50)
 
 
     def test_setBatchSize(self):
