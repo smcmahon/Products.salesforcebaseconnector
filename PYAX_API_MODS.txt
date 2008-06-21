@@ -1,0 +1,31 @@
+CREATE:
+=======
+Before:
+
+ create(dict(type='Contact', key/value pairs))
+
+After:
+
+ create('Contact', dict(key/value pairs))
+
+
+QUERY:
+=====
+Before:
+
+ query([fieldOne, fieldTwo,],TypeName,soqlstatement)
+
+After:
+
+ query("SELECT Id, LastName, FirstName, Phone, Email, Birthdate FROM Contact WHERE LastName = 'Doe' and FirstName = 'Jane'")
+
+
+QUERY RESULTS:
+==============
+Before:
+
+ no res['results'] = 2
+
+After:
+
+ len(res.items()), 2
