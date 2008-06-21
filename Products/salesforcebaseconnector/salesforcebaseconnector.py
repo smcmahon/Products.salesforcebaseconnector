@@ -75,7 +75,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         return self._v_sfclient 
 
     def _resetClient(self):
-        logger.debug('reseting client')
+        logger.debug('resetting client')
         self._v_sfclient = None
         
         

@@ -237,34 +237,32 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
         svc = self.toolbox
         startdate = datetime.datetime.utcnow()
         enddate = startdate + datetime.timedelta(seconds=61)
-        data = dict(type='Contact',
-            LastName='Doe',
+        data = dict(LastName='Doe',
             FirstName='John',
             Phone='123-456-7890',
             Email='john@doe.com',
             Birthdate = datetime.date(1970, 1, 4)
             )
-        res = svc.create([data])
+        res = svc.create('Contact', [data])
         id = res[0]['id']
         svc.delete(id)
         self._todelete.append(id)
         res = svc.getDeleted('Contact', startdate, enddate)
         self.failUnless(len(res) != 0)
-        ids = [r['id'] for r in res]
-        self.failUnless(id in ids)
+        deleted = res['deletedRecords']['id']
+        self.assertEquals(id, deleted)
 
     def test_getUpdated(self):
         svc = self.toolbox
         startdate = datetime.datetime.utcnow()
         enddate = startdate + datetime.timedelta(seconds=61)
-        data = dict(type='Contact',
-                LastName='Doe',
+        data = dict(LastName='Doe',
                 FirstName='John',
                 Phone='123-456-7890',
                 Email='john@doe.com',
                 Birthdate = datetime.date(1970, 1, 4)
                 )
-        res = svc.create(data)
+        res = svc.create('Contact', data)
         id = res[0]['id']
         self._todelete.append(id)
         data = dict(type='Contact',
@@ -272,6 +270,8 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
                 FirstName='Jane')
         svc.update(data)
         res = svc.getUpdated('Contact', startdate, enddate)
+        updated = res['updatedRecords']['id']
+        
         self.failUnless(id in res)
     
     def test_create(self):
