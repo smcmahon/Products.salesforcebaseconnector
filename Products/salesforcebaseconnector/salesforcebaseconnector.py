@@ -208,16 +208,13 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         """See .interfaces.salesforcebaseconnector
         """
         logger.debug('calling retrieve')
-        fieldString = ''
-        if fields:
-            fieldString = ','.join(fields)
         try:
-            result = self._getClient().retrieve(fieldString, sObjectType, ids)
+            result = self._getClient().retrieve(sObjectType, ids, fields)
         except NoConnectionError:
             self._resetClient()
-            result = self._getClient().retrieve(fieldString, sObjectType, ids)
+            result = self._getClient().retrieve(sObjectType, ids, fields)
         
-        return result        
+        return result
         
     security.declarePublic('getDeleted')        
     def getDeleted(self, sObjectType, start, end):
