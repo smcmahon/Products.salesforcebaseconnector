@@ -73,7 +73,7 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
                 ids = ids[200:]
             self.toolbox.delete(ids)
 
-    def test_query123(self):
+    def test_query(self):
         """Test a very basic query with a condition (a "where" clause)"""
         svc = self.toolbox
         data = dict(
