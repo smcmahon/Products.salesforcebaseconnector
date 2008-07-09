@@ -2,6 +2,14 @@
 
 (svn/unreleased)
 
+ - _areValidCredentials test no longer silently catches all exceptions before failing
+   to store any credentials.  Only slightly better, but now we put a warning with the exact
+   ExceptionCode in the log file for further inspection. [andrewb]
+   
+   NB: All eligible ExceptionCode found at:
+   http://www.salesforce.com/us/developer/docs/api/index_Left.htm#StartTopic=sforce_api_calls_concepts_core_data_objects.htm#i1421571|SkinName=webhelp
+   
+
  - Integration test suites all based on CMFTestCase and creation of CMF Site,
    rather than PloneTestCase and Plone site for performance reasons [andrewb]
 

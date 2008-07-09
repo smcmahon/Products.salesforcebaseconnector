@@ -61,7 +61,8 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
             testClient = SalesforceClient()
             testClient.login(username,passwd)
             return True
-        except:
+        except Exception, exc:
+            logger.warning('invalid credentials caught with exception code: %s' % exc.faultString)
             return False
 
     def _getClient(self):
