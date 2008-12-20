@@ -9,10 +9,10 @@ from zope.interface import implements
 ## Plone imports
 from Products.CMFCore.utils import UniqueObject
 from OFS.SimpleItem import SimpleItem
-from Globals import InitializeClass, DTMLFile
+from Globals import InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from AccessControl import ClassSecurityInfo
-from Products.CMFCore.permissions import View, ManagePortal
+from Products.CMFCore.permissions import ManagePortal
 
 ## Interfaces
 from interfaces.salesforcebaseconnector import ISalesforceBaseConnector, ISalesforceBaseConnectorInfo
@@ -55,16 +55,6 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         res = self._v_sfclient.login(username, passwd)
         return res
     
-    def _areValidCredentials(self, username, passwd):
-        logger.debug('testing new user credentials...')
-        try:
-            testClient = SalesforceClient()
-            testClient.login(username,passwd)
-            return True
-        except Exception, exc:
-            logger.warning('invalid credentials caught with exception code: %s' % exc.faultString)
-            return False
-
     def _getClient(self):
         logger.debug('calling _getClient')
         if not hasattr(self, '_v_sfclient') or self._v_sfclient is None:
@@ -85,22 +75,26 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     def manage_configSalesforceCredentials(self, username, password, REQUEST=None):
         """Called by the ZMI auth management tab """
         portalMessage = ''
-        if self.setCredentials(username, password):
+        try:
+            self.setCredentials(username, password)
             portalMessage = 'Authentication tested successfully. Username and password saved.'
-        else:
-            portalMessage = 'The supplied credentials could not be authenticated. No credentials saved.'
+        except Exception, exc:
+            portalMessage = 'The supplied credentials could not be authenticated.  Salesforce exception code: %s' % exc.faultString
         if REQUEST is not None:
             REQUEST.RESPONSE.redirect('%s/manage_config?portal_status_message=%s' % (self.absolute_url(),portalMessage))
-        
+    
     security.declareProtected(ManagePortal, 'setCredentials')
     def setCredentials(self, username, password):
-        if self._areValidCredentials(username, password):
-            self._username = username
-            self._password = password
-            # Disconnect from any previously connected Salesforce instance
-            self._resetClient()            
-            return True
-        return False
+        # do test log in first to confirm valid credentials
+        # (will raise exception that can be handled by our caller, if invalid)
+        testClient = SalesforceClient()
+        testClient.login(username, password)
+        
+        self._username = username
+        self._password = password
+        # Disconnect from any previously connected Salesforce instance
+        self._resetClient()
+        return True
 
     security.declareProtected(ManagePortal, 'setBatchSize')
     def setBatchSize(self, batchsize):

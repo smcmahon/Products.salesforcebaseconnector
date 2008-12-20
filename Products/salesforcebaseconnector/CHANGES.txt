@@ -1,15 +1,10 @@
-1.0-alpha4 (svn/unreleased)
+1.0 final (svn/unreleased)
 
-(svn/unreleased)
+ - Don't display a configured password in the configuration form. [davisagli]
 
- - _areValidCredentials test no longer silently catches all exceptions before failing
-   to store any credentials.  Only slightly better, but now we put a warning with the exact
-   ExceptionCode in the log file for further inspection. [andrewb]
+ - Refactored credentials check so that invalid credentials will result in a warning
+   shown to the user, rather than failing silently.  This closes issue #1. [andrewb, davisagli]
    
-   NB: All eligible ExceptionCode found at:
-   http://www.salesforce.com/us/developer/docs/api/index_Left.htm#StartTopic=sforce_api_calls_concepts_core_data_objects.htm#i1421571|SkinName=webhelp
-   
-
  - Integration test suites all based on CMFTestCase and creation of CMF Site,
    rather than PloneTestCase and Plone site for performance reasons [andrewb]
 

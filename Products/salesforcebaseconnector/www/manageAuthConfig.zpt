@@ -22,7 +22,7 @@
     <div class="form-label">
     Password:
     </div>
-    <input tal:attributes="value here/getPassword" type="password" name="password" size="25" value="" />
+    <input type="password" name="password" size="25" value="" />
     <br/><br/>
     <div class="form-element">
     <input class="form-element" type="submit" name="submit"

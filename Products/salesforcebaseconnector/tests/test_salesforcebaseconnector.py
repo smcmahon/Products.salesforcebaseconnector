@@ -1,3 +1,4 @@
+from beatbox import SoapFaultError
 from base import SalesforceBaseConnectorTestCase
 from Products.salesforcebaseconnector.interfaces.salesforcebaseconnector import ISalesforceBaseConnector, \
         ISalesforceBaseConnectorInfo
@@ -50,8 +51,8 @@ class TestSalesforceBaseConnector(SalesforceBaseConnectorTestCase):
             , "You may have incorrectly entered your Salesforce login within the sfconfig.py file, otherwise we're having troubles connecting to Salesforce.")
 
         # try making up some *hopefully* nonsensical username and password to show the connection is failing
-        self.failIf(self.toolbox.setCredentials('username_supercalifragilisticexpialidocious',
-                                                            'password_supercalifragilisticexpialidocious'))
+        self.assertRaises(SoapFaultError, self.toolbox.setCredentials,
+            'username_supercalifragilisticexpialidocious', 'password_supercalifragilisticexpialidocious')
 
 
 class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
