@@ -1,4 +1,4 @@
-1.0c1 (svn/unreleased)
+1.0c1 (2008-12-22)
 
  - Protect the base connector's query, queryMore, retrieve, getDeleted, and
    getUpdated methods with the 'Manage portal' permission instead of making
@@ -15,7 +15,7 @@
  - Integration test suites all based on CMFTestCase and creation of CMF Site,
    rather than PloneTestCase and Plone site for performance reasons [andrewb]
 
-1.0-alpha3 
+1.0-alpha3
 
  - Added new publicly supported API "listFieldsRequiredForCreation" which
    encapsulates some of the rules for which fields are required upon object
