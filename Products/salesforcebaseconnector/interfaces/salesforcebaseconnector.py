@@ -1,8 +1,13 @@
 from zope.interface import Interface, Attribute
+from Products.CMFCore.permissions import setDefaultRoles
 
 # Permissions
 SalesforceRead = 'Salesforce: Read'
 SalesforceWrite = 'Salesforce: Write'
+
+setDefaultRoles(SalesforceRead, ('Manager'))
+setDefaultRoles(SalesforceWrite, ('Manager'))
+
 
 class ISalesforceBaseConnectorInfo(Interface):
     """Defines a READ ONLY interface for Salesforce
