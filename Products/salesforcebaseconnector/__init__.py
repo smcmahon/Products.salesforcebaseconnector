@@ -11,13 +11,12 @@ tools = ( salesforcebaseconnector.SalesforceBaseConnector,
           )
 
 from Products.salesforcebaseconnector.interfaces.salesforcebaseconnector import SalesforceRead, SalesforceWrite
+setDefaultRoles(SalesforceRead, ('Manager'))
+setDefaultRoles(SalesforceWrite, ('Manager'))
 
 def initialize(context):
-    setDefaultRoles(SalesforceRead, ('Manager'))
-    setDefaultRoles(SalesforceWrite, ('Manager'))
-    
     cmf_utils.ToolInit('Salesforce Base Connector',
                     tools = tools,
                     product_name = 'salesforcebaseconnector',
-                    icon='www/salesforce.gif' 
+                    icon='www/salesforce.gif'
                     ).initialize( context )
