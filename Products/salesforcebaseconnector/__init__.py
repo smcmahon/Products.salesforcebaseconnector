@@ -1,7 +1,6 @@
 import sys
-from Products.CMFCore.permissions import AddPortalContent
 from Products.CMFCore import utils as cmf_utils
-from Products.Archetypes.public import process_types, listTypes
+from Products.CMFCore.permissions import setDefaultRoles
 
 this_module = sys.modules[ __name__ ]
  
@@ -11,7 +10,12 @@ import salesforcebaseconnector
 tools = ( salesforcebaseconnector.SalesforceBaseConnector,
           )
 
+from Products.salesforcebaseconnector.interfaces.salesforcebaseconnector import SalesforceRead, SalesforceWrite
+
 def initialize(context):
+    setDefaultRoles(SalesforceRead, ('Manager'))
+    setDefaultRoles(SalesforceWrite, ('Manager'))
+    
     cmf_utils.ToolInit('Salesforce Base Connector',
                     tools = tools,
                     product_name = 'salesforcebaseconnector',

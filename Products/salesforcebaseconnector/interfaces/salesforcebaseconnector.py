@@ -1,5 +1,9 @@
 from zope.interface import Interface, Attribute
 
+# Permissions
+SalesforceRead = 'Salesforce: Read'
+SalesforceWrite = 'Salesforce: Write'
+
 class ISalesforceBaseConnectorInfo(Interface):
     """Defines a READ ONLY interface for Salesforce
     """

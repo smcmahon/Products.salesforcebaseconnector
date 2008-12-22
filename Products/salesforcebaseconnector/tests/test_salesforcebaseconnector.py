@@ -1,10 +1,12 @@
+from zExceptions import Unauthorized
 from beatbox import SoapFaultError
 from base import SalesforceBaseConnectorTestCase
 from Products.salesforcebaseconnector.interfaces.salesforcebaseconnector import ISalesforceBaseConnector, \
-        ISalesforceBaseConnectorInfo
+        ISalesforceBaseConnectorInfo, SalesforceRead, SalesforceWrite
 from Products.salesforcebaseconnector.salesforcebaseconnector import SalesforceBaseConnector
 from zope.interface.verify import verifyClass
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import _checkPermission as checkPermission
 import datetime
 
 # be sure to set USERNAME/PASSWORD for test config
@@ -54,6 +56,28 @@ class TestSalesforceBaseConnector(SalesforceBaseConnectorTestCase):
         self.assertRaises(SoapFaultError, self.toolbox.setCredentials,
             'username_supercalifragilisticexpialidocious', 'password_supercalifragilisticexpialidocious')
 
+    def testBaseConnectorSecurity(self):
+        """ None of the base connector's attributes should be publicly traversable.
+        """
+        for attr in ISalesforceBaseConnector:
+            if not callable(attr):
+                continue
+            try:
+                self.assertRaises(Unauthorized, self.toolbox.restrictedTraverse, attr)
+            except AssertionError, e:
+                # annotate the assertion error with the current attribute
+                e.args = [e.args[0] + ': %s attribute' % attr] + list(e.args[1:])
+                raise
+    
+    def testSalesforcePermissions(self):
+        """ Make sure that the Manager role has the Salesforce read and write permissions,
+            by default. """
+        self.setRoles(())
+        self.failIf(checkPermission(SalesforceRead, self.portal))
+        self.failIf(checkPermission(SalesforceWrite, self.portal))
+        self.setRoles(('Manager',))
+        self.failUnless(checkPermission(SalesforceRead, self.portal))
+        self.failUnless(checkPermission(SalesforceWrite, self.portal))
 
 class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
     """docstring for SF methods"""

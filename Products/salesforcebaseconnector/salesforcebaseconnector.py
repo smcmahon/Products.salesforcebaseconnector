@@ -15,7 +15,8 @@ from AccessControl import ClassSecurityInfo
 from Products.CMFCore.permissions import ManagePortal
 
 ## Interfaces
-from interfaces.salesforcebaseconnector import ISalesforceBaseConnector, ISalesforceBaseConnectorInfo
+from interfaces.salesforcebaseconnector import ISalesforceBaseConnector, ISalesforceBaseConnectorInfo, \
+    SalesforceRead, SalesforceWrite
 
 logger = logging.getLogger('SalesforceBaseConnector')
 
@@ -110,7 +111,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         """Return the current stored Salesforce username"""
         return self._username
 
-    security.declareProtected(ManagePortal, 'getPassword')    
+    security.declareProtected(ManagePortal, 'getPassword')
     def getPassword(self):
         """Return the current stored Salesforce password"""
         return self._password
@@ -119,7 +120,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     # Convenience methods not included in Salesforce API
     # #
     
-    security.declareProtected(ManagePortal, 'listFieldsRequiredForCreation')            
+    security.declareProtected(SalesforceRead, 'listFieldsRequiredForCreation')
     def listFieldsRequiredForCreation(self, sObjectType):
         """See .interfaces.salesforcebaseconnector
         """
@@ -141,7 +142,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     ##
     
     ## Accessors
-    security.declarePublic('query')
+    security.declareProtected(SalesforceRead, 'query')
     def query(self, fieldList, sObjectType, whereClause=''):
         """See .interfaces.salesforcebaseconnector
         """
@@ -160,7 +161,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
             
         return result
     
-    security.declareProtected(ManagePortal, 'describeGlobal')    
+    security.declareProtected(SalesforceRead, 'describeGlobal')
     def describeGlobal(self):
         """See .interfaces.salesforcebaseconnector
         """
@@ -173,7 +174,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result
         
-    security.declareProtected(ManagePortal, 'describeSObjects')            
+    security.declareProtected(SalesforceRead, 'describeSObjects')
     def describeSObjects(self, sObjectTypes):
         """See .interfaces.salesforcebaseconnector
         """
@@ -186,7 +187,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result        
         
-    security.declarePublic('queryMore')        
+    security.declareProtected(SalesforceRead, 'queryMore')
     def queryMore(self, queryLocator):
         """See .interfaces.salesforcebaseconnector
         """
@@ -199,7 +200,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result
         
-    security.declarePublic('retrieve')        
+    security.declareProtected(SalesforceRead, 'retrieve')
     def retrieve(self, fields, sObjectType, ids):
         """See .interfaces.salesforcebaseconnector
         """
@@ -215,7 +216,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result        
         
-    security.declarePublic('getDeleted')        
+    security.declareProtected(SalesforceRead, 'getDeleted')
     def getDeleted(self, sObjectType, start, end):
         """See .interfaces.salesforcebaseconnector
         """
@@ -228,7 +229,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result
     
-    security.declarePublic('getUpdated')        
+    security.declareProtected(SalesforceRead, 'getUpdated')
     def getUpdated(self, sObjectType, start, end):
         """See .interfaces.salesforcebaseconnector
         """
@@ -241,7 +242,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result
     
-    security.declareProtected(ManagePortal, 'getUserInfo')    
+    security.declareProtected(SalesforceRead, 'getUserInfo')
     def getUserInfo(self):
         """See .interfaces.salesforcebaseconnector
         """
@@ -254,7 +255,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result
 
-    security.declareProtected(ManagePortal, 'describeTabs')        
+    security.declareProtected(SalesforceRead, 'describeTabs')
     def describeTabs(self):
         """See .interfaces.salesforcebaseconnector
         """
@@ -269,7 +270,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
            
 
     ## Mutators
-    security.declareProtected(ManagePortal, 'create')    
+    security.declareProtected(SalesforceWrite, 'create')
     def create(self, sObjects):
         """See .interfaces.salesforcebaseconnector
         """
@@ -282,7 +283,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result
         
-    security.declareProtected(ManagePortal, 'update')            
+    security.declareProtected(SalesforceWrite, 'update')
     def update(self, sObjects):
         """See .interfaces.salesforcebaseconnector
         """
@@ -295,7 +296,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result
 
-    security.declareProtected(ManagePortal, 'upsert')    
+    security.declareProtected(SalesforceWrite, 'upsert')
     def upsert(self, externalIdName, sObjects):
         """See .interfaces.salesforcebaseconnector
         """
@@ -308,7 +309,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         return result
 
-    security.declareProtected(ManagePortal, 'delete')    
+    security.declareProtected(SalesforceWrite, 'delete')    
     def delete(self, ids):
         """See .interfaces.salesforcebaseconnector
         """        

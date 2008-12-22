@@ -1,9 +1,16 @@
-1.0 final (svn/unreleased)
+1.0c1 (svn/unreleased)
+
+ - Protect the base connector's query, queryMore, retrieve, getDeleted, and
+   getUpdated methods with the 'Manage portal' permission instead of making
+   them publicly traversable.  Note that this means any restricted Python
+   calling these methods (e.g. page templates or Python scripts) will need
+   to use a proxy role that has this permission in order to continue functioning.
+   [davisagli]
 
  - Don't display a configured password in the configuration form. [davisagli]
 
  - Refactored credentials check so that invalid credentials will result in a warning
-   shown to the user, rather than failing silently.  This closes issue #1. [andrewb, davisagli]
+   shown to the user, rather than failing silently.  This closes issue #2. [andrewb, davisagli]
    
  - Integration test suites all based on CMFTestCase and creation of CMF Site,
    rather than PloneTestCase and Plone site for performance reasons [andrewb]
