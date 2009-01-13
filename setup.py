@@ -12,7 +12,7 @@ setup(name='Products.salesforcebaseconnector',
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Framework :: Zope2",
-        "Framework :: Plone",
+        "Development Status :: 5 - Production/Stable",
         ],
       keywords='Zope CMF Plone Salesforce.com CRM integration',
       author='Plone/Salesforce Integration Group',
@@ -25,7 +25,7 @@ setup(name='Products.salesforcebaseconnector',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'beatbox>=0.9,<=1.0dev',
+          'beatbox>=0.9.1.1,<=1.0dev',
           # -*- Extra requirements: -*-
       ],
       entry_points="""

@@ -1,4 +1,10 @@
-1.0c2 (unreleased)
+1.0 final (2009-01-13)
+
+ - Updated beatbox dependency to version 0.9.1.1
+   [davisagli]
+
+ - Don't use trademarked Salesforce.com icon.
+   [davisagli]
 
 1.0c1 (2008-12-22)
 
