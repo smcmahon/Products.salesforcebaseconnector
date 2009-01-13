@@ -6,7 +6,8 @@ version = open(os.path.join("Products", "salesforcebaseconnector", "version.txt"
 setup(name='Products.salesforcebaseconnector',
       version=version,
       description="",
-      long_description=open(os.path.join("Products", "salesforcebaseconnector", "README.txt")).read(),
+      long_description=open(os.path.join("Products", "salesforcebaseconnector", "README.txt")).read() + \
+                "\n" + open(os.path.join('Products', 'salesforcebaseconnector', 'CHANGES.txt')).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Programming Language :: Python",
