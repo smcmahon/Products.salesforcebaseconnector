@@ -2,6 +2,11 @@ Change history
 ==============
 
 1.1 (unreleased)
+ 
+ - Remove deprecated parameter product_name from ToolInit call, this has been 
+   gone since before 2.5.5 which is our earliest Salesforce Base Connector 
+   version.
+   [andrewb]
 
 
 1.0.1 final (2009-01-20)
