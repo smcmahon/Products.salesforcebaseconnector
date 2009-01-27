@@ -12,6 +12,5 @@ tools = ( salesforcebaseconnector.SalesforceBaseConnector,
 def initialize(context):
     cmf_utils.ToolInit('Salesforce Base Connector',
                     tools = tools,
-                    product_name = 'salesforcebaseconnector',
                     icon='www/salesforce.png'
                     ).initialize( context )
