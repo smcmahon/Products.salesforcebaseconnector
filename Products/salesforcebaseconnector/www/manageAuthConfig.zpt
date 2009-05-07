@@ -10,6 +10,16 @@
 
 <form action="manage_configSalesforceCredentials" method="post">
     <div class="form-help">
+        Enter the Salesforce API endpoint which should be accessed.
+    </div>
+    <br/>
+    <div class="form-label">
+        Server URL:
+    </div>
+    <input type="text" name="serverUrl" size="50"
+        tal:attributes="value request/form/serverUrl|here/serverUrl"/>
+    <br/><br/>
+    <div class="form-help">
     Enter the username and password for your Salesforce instance. <br />
     They will be tested and only stored if they can be authenticated.
     </div>
@@ -17,7 +27,7 @@
     <div class="form-label">
     Username:
     </div>
-    <input tal:attributes="value here/getUsername" type="text" name="username" size="25" />
+    <input tal:attributes="value request/form/username|here/getUsername" type="text" name="username" size="25" />
     <br/><br/>
     <div class="form-label">
     Password:

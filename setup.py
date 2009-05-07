@@ -26,7 +26,7 @@ setup(name='Products.salesforcebaseconnector',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'beatbox>=0.9.1.1,<=1.0dev',
+          'beatbox>=0.10',
           # -*- Extra requirements: -*-
       ],
       entry_points="""

@@ -78,6 +78,10 @@ class TestSalesforceBaseConnector(SalesforceBaseConnectorTestCase):
         self.setRoles(('Manager',))
         self.failUnless(checkPermission(SalesforceRead, self.portal))
         self.failUnless(checkPermission(SalesforceWrite, self.portal))
+    
+    def testAlternateServerUrl(self):
+        testServerUrl = 'https://www.salesforce.com/services/Soap/u/8.0'
+        self.failUnless(self.toolbox.setCredentials(sfconfig.USERNAME, sfconfig.PASSWORD, serverUrl=testServerUrl))
 
 class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
     """docstring for SF methods"""

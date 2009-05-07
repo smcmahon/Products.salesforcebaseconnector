@@ -1,5 +1,6 @@
 ## Python imports
 import logging
+import urllib
 from beatbox import PythonClient as SalesforceClient
 from beatbox import SessionTimeoutError
 
@@ -20,11 +21,15 @@ from interfaces.salesforcebaseconnector import ISalesforceBaseConnector, ISalesf
 
 logger = logging.getLogger('SalesforceBaseConnector')
 
+DEFAULT_SERVER_URL = 'https://www.salesforce.com/services/Soap/u/7.0'
+
 class SalesforceBaseConnector (UniqueObject, SimpleItem):
     """A tool for storing/managing connections and connection information when interacting
        with Salesforce.com via beatbox.
     """
     implements(ISalesforceBaseConnector,ISalesforceBaseConnectorInfo)
+    
+    serverUrl = DEFAULT_SERVER_URL
     
     def __init__(self):
         self._username = ''
@@ -59,7 +64,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     def _getClient(self):
         logger.debug('calling _getClient')
         if not hasattr(self, '_v_sfclient') or self._v_sfclient is None:
-            self._v_sfclient = SalesforceClient()
+            self._v_sfclient = SalesforceClient(serverUrl = self.serverUrl)
         if not self._v_sfclient.isConnected():
             logger.debug('No open connection to Salesforce. Trying to log in...')
             response = self._login()
@@ -73,24 +78,30 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         
     security.declareProtected(ManagePortal, 'manage_configSalesforceCredentials')
-    def manage_configSalesforceCredentials(self, username, password, REQUEST=None):
+    def manage_configSalesforceCredentials(self, username, password, REQUEST=None, serverUrl=DEFAULT_SERVER_URL):
         """Called by the ZMI auth management tab """
         portalMessage = ''
         try:
-            self.setCredentials(username, password)
+            self.setCredentials(username, password, serverUrl=serverUrl)
             portalMessage = 'Authentication tested successfully. Username and password saved.'
         except Exception, exc:
             portalMessage = 'The supplied credentials could not be authenticated.  Salesforce exception code: %s' % exc.faultString
         if REQUEST is not None:
-            REQUEST.RESPONSE.redirect('%s/manage_config?portal_status_message=%s' % (self.absolute_url(),portalMessage))
-    
+            query = urllib.urlencode({
+                'username': username,
+                'serverUrl': serverUrl,
+                'portal_status_message': portalMessage,
+                })
+            REQUEST.RESPONSE.redirect('%s/manage_config?%s' % (self.absolute_url(),query))
+
     security.declareProtected(ManagePortal, 'setCredentials')
-    def setCredentials(self, username, password):
+    def setCredentials(self, username, password, serverUrl=DEFAULT_SERVER_URL):
         # do test log in first to confirm valid credentials
         # (will raise exception that can be handled by our caller, if invalid)
-        testClient = SalesforceClient()
+        testClient = SalesforceClient(serverUrl = serverUrl)
         testClient.login(username, password)
         
+        self.serverUrl = serverUrl
         self._username = username
         self._password = password
         # Disconnect from any previously connected Salesforce instance

@@ -2,12 +2,18 @@ Change history
 ==============
 
 1.1 (unreleased)
- 
+
+ - Fixed configuration form so if the form validation fails it doesn't wipe
+   out your form values.
+   [davisagli]
+
+ - Added option to configure the Salesforce API SOAP endpoint (server URL).
+   [davisagli]
+
  - Remove deprecated parameter product_name from ToolInit call, this has been 
    gone since before 2.5.5 which is our earliest Salesforce Base Connector 
    version.
    [andrewb]
-
 
 1.0.1 final (2009-01-20)
 
