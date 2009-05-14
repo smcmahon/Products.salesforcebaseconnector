@@ -59,7 +59,7 @@ Dependencies
 ============
 
 Depends upon the Beatbox library, which is a Python wrapper to the
-Salesforce.com API (version 7.0).
+Salesforce.com API (version 7.0).  Beatbox 0.12 or greater is required.
 
 To download and install beatbox, please visit::
 
