@@ -80,6 +80,9 @@ class TestSalesforceBaseConnector(SalesforceBaseConnectorTestCase):
         self.failUnless(checkPermission(SalesforceWrite, self.portal))
     
     def testAlternateServerUrl(self):
+        # note that version 8.0 of the API isn't actually supported by beatbox;
+        # we just use it here because it's possible to connect to it with the
+        # same credentials
         testServerUrl = 'https://www.salesforce.com/services/Soap/u/8.0'
         self.failUnless(self.toolbox.setCredentials(sfconfig.USERNAME, sfconfig.PASSWORD, serverUrl=testServerUrl))
 
