@@ -1,7 +1,7 @@
 Change history
 ==============
 
-1.1 (unreleased)
+1.1 (2009-05-13)
 
  - Fixed configuration form so if the form validation fails it doesn't wipe
    out your form values.
