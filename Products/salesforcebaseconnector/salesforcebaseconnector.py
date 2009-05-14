@@ -2,7 +2,7 @@
 import logging
 import urllib
 from beatbox import PythonClient as SalesforceClient
-from beatbox import SessionTimeoutError
+from beatbox import SessionTimeoutError, DEFAULT_SERVER_URL
 
 ## Zope imports
 from zope.interface import implements
@@ -21,15 +21,14 @@ from interfaces.salesforcebaseconnector import ISalesforceBaseConnector, ISalesf
 
 logger = logging.getLogger('SalesforceBaseConnector')
 
-DEFAULT_SERVER_URL = 'https://www.salesforce.com/services/Soap/u/7.0'
-
 class SalesforceBaseConnector (UniqueObject, SimpleItem):
     """A tool for storing/managing connections and connection information when interacting
        with Salesforce.com via beatbox.
     """
     implements(ISalesforceBaseConnector,ISalesforceBaseConnectorInfo)
     
-    serverUrl = DEFAULT_SERVER_URL
+    serverUrl = None
+    defaultServerUrl = DEFAULT_SERVER_URL
     
     def __init__(self):
         self._username = ''
@@ -78,7 +77,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         
         
     security.declareProtected(ManagePortal, 'manage_configSalesforceCredentials')
-    def manage_configSalesforceCredentials(self, username, password, REQUEST=None, serverUrl=DEFAULT_SERVER_URL):
+    def manage_configSalesforceCredentials(self, username, password, REQUEST=None, serverUrl=None):
         """Called by the ZMI auth management tab """
         portalMessage = ''
         try:
@@ -101,6 +100,8 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         testClient = SalesforceClient(serverUrl = serverUrl)
         testClient.login(username, password)
         
+        if serverUrl == DEFAULT_SERVER_URL:
+            serverUrl = None
         self.serverUrl = serverUrl
         self._username = username
         self._password = password

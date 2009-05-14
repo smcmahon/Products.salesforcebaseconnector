@@ -17,7 +17,7 @@
         Server URL:
     </div>
     <input type="text" name="serverUrl" size="50"
-        tal:attributes="value request/form/serverUrl|here/serverUrl"/>
+        tal:attributes="value request/form/serverUrl|here/serverUrl|here/defaultServerUrl"/>
     <br/><br/>
     <div class="form-help">
     Enter the username and password for your Salesforce instance. <br />

@@ -3,7 +3,8 @@ Change history
 
 1.2 (unreleased)
 
-
+ - Don't persist the serverUrl unless it differs from beatbox's default.
+   [davisagli]
 
 1.1 (2009-05-13)
 
