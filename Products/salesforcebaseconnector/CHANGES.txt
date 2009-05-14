@@ -1,6 +1,10 @@
 Change history
 ==============
 
+1.2 (unreleased)
+
+
+
 1.1.1 (2009-05-13)
 
  - Don't persist the serverUrl unless it differs from beatbox's default.
