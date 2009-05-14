@@ -71,23 +71,27 @@ Installation
 Buildout
 --------
 
-* Add ``Products.salesforcebaseconnector`` to the eggs section of your buildout
-configuration and run buildout.
+ * Add ``Products.salesforcebaseconnector`` to the eggs section of your buildout
+   configuration and run buildout.
 
-* Restart Zope.
+ * Restart Zope.
 
-* In ZMI, add Salesforce Base Connector to root of site, then set username and password. The credentials will be tested for validity before being stored.
+ * In ZMI, add Salesforce Base Connector to root of site, then set username and
+   password. The credentials will be tested for validity before being stored.
 
 Traditional Zope Product
 ------------------------
 
-* Install dependencies (see beatbox/README.txt for install instructions)
+  * Install dependencies (see beatbox/README.txt for install instructions)
 
-* Unpack the salesforcebaseconnector product package into the Products folder of the Zope/Plone instance. Check your ownership and permissions.
+  * Unpack the salesforcebaseconnector product package into the Products folder
+    of the Zope/Plone instance. Check your ownership and permissions.
 
-* Restart Zope.
+  * Restart Zope.
 
-* In ZMI, add Salesforce Base Connector to root of site, then set username and password. The credentials will be tested for validity before being stored.
+  * In ZMI, add Salesforce Base Connector to root of site, then set username
+    and password. The credentials will be tested for validity before being
+    stored.
 
 
 Known Problems
