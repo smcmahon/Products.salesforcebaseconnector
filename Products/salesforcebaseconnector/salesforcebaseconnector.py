@@ -94,14 +94,15 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
             REQUEST.RESPONSE.redirect('%s/manage_config?%s' % (self.absolute_url(),query))
 
     security.declareProtected(ManagePortal, 'setCredentials')
-    def setCredentials(self, username, password, serverUrl=DEFAULT_SERVER_URL):
+    def setCredentials(self, username, password, serverUrl=None):
+        if serverUrl == DEFAULT_SERVER_URL:
+            serverUrl = None
+
         # do test log in first to confirm valid credentials
         # (will raise exception that can be handled by our caller, if invalid)
         testClient = SalesforceClient(serverUrl = serverUrl)
         testClient.login(username, password)
         
-        if serverUrl == DEFAULT_SERVER_URL:
-            serverUrl = None
         self.serverUrl = serverUrl
         self._username = username
         self._password = password
