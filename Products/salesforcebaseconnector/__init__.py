@@ -1,5 +1,8 @@
 import sys
+from zope.i18nmessageid import MessageFactory
 from Products.CMFCore import utils as cmf_utils
+
+sbcMessageFactory = MessageFactory('Products.salesforcebaseconnector')
 
 this_module = sys.modules[ __name__ ]
  

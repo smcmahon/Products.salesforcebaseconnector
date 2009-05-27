@@ -3,7 +3,14 @@ Change history
 
 1.2 (unreleased)
 
-
+ - Added GenericSetup profile to create portal_salesforcebaseconnector tool 
+   upon installation of product, which is now possible through the 
+   quickinstaller
+   [jessesnyder]
+   
+ - Expose authentication and endpoint settings through a controlpanel 
+   configlet
+   [jessesnyder]
 
 1.1.1 (2009-05-13)
 

@@ -1,0 +1,20 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+
+    i18n_domain="Products.salesforcebaseconnector">
+
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <genericsetup:registerProfile
+       name="default"
+       title="Salesforce Base Connector"
+       directory="profiles/default"
+       description="Salesforce Base Connector extension profile"
+       provides="Products.GenericSetup.interfaces.EXTENSION"
+       />
+       
+    <include package=".browser" />
+
+</configure>

@@ -1,5 +1,8 @@
+from zope import schema
 from zope.interface import Interface, Attribute
 from Products.CMFCore.permissions import setDefaultRoles
+
+from Products.salesforcebaseconnector import sbcMessageFactory as _
 
 # Permissions
 SalesforceRead = 'Salesforce: Read'
@@ -196,3 +199,29 @@ class ISalesforceBaseConnector(ISalesforceBaseConnectorInfo):
 
     def delete(ids):
         '''Delete record(s) in Salesforce by id or an array of ids.'''
+
+class IPloneConfiguration(Interface):
+    username = schema.TextLine(
+             title = _(u'Username'),
+             description = _(u'The username for your Salesforce.com instance'),
+             required = True,
+             readonly = False,
+             default = None,
+             missing_value = None,
+    )
+    password = schema.Password(
+             title = _(u'Password'),
+             description = _(u'The password for your instance, including your security token if necessary'),
+             required = True,
+             readonly = False,
+             default = None,
+             missing_value = None,
+    )
+    server_url = schema.URI(
+             title = u'Server URL',
+             description = u'Enter the Salesforce API endpoint which should be accessed.',
+             required = True,
+             readonly = False,
+             default = None,
+    )
+
