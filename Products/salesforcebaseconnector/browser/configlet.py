@@ -2,34 +2,21 @@ from beatbox import DEFAULT_SERVER_URL
 from zope.component import adapts, getUtility, getMultiAdapter
 from zope.formlib.form import FormFields
 from zope.interface import implements
-from zope.i18nmessageid import MessageFactory
 from zope.formlib import form
 
 from Acquisition import aq_inner
-from plone.fieldsets.fieldsets import FormFieldsets
 from plone.protect import CheckAuthenticator
 from plone.app.form.validators import null_validator
 
 from Products.CMFCore.utils import getToolByName
-from Products.CMFCore.interfaces import IPropertiesTool
-from Products.CMFDefault.formlib.schema import ProxyFieldProperty
 from Products.CMFDefault.formlib.schema import SchemaAdapterBase
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.statusmessages.interfaces import IStatusMessage
 from plone.app.controlpanel.form import ControlPanelForm
 
-from Products.Five.formlib import formbase
-
 from Products.salesforcebaseconnector.interfaces.salesforcebaseconnector import IPloneConfiguration
 from Products.salesforcebaseconnector import sbcMessageFactory as _
 
-# Put the two interfaces on separate tabs 
-# descriptor_fieldset = FormFieldsets(interfaces.IMetadataDescriptors)
-# descriptor_fieldset.id = 'descriptors'
-# descriptor_fieldset.label = _(u'label_descriptors', default=u'Descriptors')
-# tagging_fieldset = FormFieldsets(interfaces.IMetadataTagging)
-# tagging_fieldset.id = 'tagging'
-# tagging_fieldset.label = _(u'label_tagging', default=u'Tagging')
 
 class SalesforceControlPanelAdapter(SchemaAdapterBase):
     adapts(IPloneSiteRoot)
