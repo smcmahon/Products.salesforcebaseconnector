@@ -201,6 +201,8 @@ class ISalesforceBaseConnector(ISalesforceBaseConnectorInfo):
         '''Delete record(s) in Salesforce by id or an array of ids.'''
 
 class IPloneConfiguration(Interface):
+    """Interface for Plone control panel configuration
+    """
     username = schema.TextLine(
              title = _(u'Username'),
              description = _(u'The username for your Salesforce.com instance'),
@@ -219,7 +221,7 @@ class IPloneConfiguration(Interface):
     )
     server_url = schema.URI(
              title = u'Server URL',
-             description = u'Enter the Salesforce API endpoint which should be accessed.',
+             description = u'The Salesforce API endpoint which should be accessed',
              required = True,
              readonly = False,
              default = None,
