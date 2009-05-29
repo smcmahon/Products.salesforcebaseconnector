@@ -71,15 +71,13 @@ class SalesforceControlPanel(ControlPanelForm):
                                data['password'], 
                                data['server_url'])
         except Exception, exc:
-            error = u'The supplied credentials could not be authenticated.  \
-                            Salesforce exception code: %s' % exc.faultString
+            error = u'The supplied values could not be stored.  \
+                Salesforce exception: %s' % exc.faultString.decode('utf-8')
             self.status = _(error)
             return
-        if form.applyChanges(self.context, self.form_fields, data,
-                             self.adapters):
-            self.status = _('Authentication tested successfully. \
-                                Username and password saved.')
-            self._on_save(data)
+        self.status = _('Supplied values tested successfully. \
+                            Username and password saved.')
+        self._on_save(data)
     
     @form.action(_(u'label_cancel', default=u'Cancel'),
                  validator=null_validator,
