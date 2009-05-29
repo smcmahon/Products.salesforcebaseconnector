@@ -12,7 +12,7 @@ First some initial setup code:
     >>> self.loginAsManager()
 
 Viewing the salesforce control panel
---------------------------------
+------------------------------------
 
     >>> self.browser.open('http://nohost/plone/@@salesforce-controlpanel')
     >>> self.browser.url.endswith('salesforce-controlpanel')
