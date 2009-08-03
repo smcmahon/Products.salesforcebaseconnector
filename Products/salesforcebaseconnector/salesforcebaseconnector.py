@@ -192,14 +192,19 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         """See .interfaces.salesforcebaseconnector
         """
         logger.debug('calling describeSObjects')
-        try:
-            result = self._getClient().describeSObjects(sObjectTypes)
-        except SessionTimeoutError:
-            self._resetClient()
-            result = self._getClient().describeSObjects(sObjectTypes)
-        
-        return result        
-        
+        # fetch info in batches of 100, as that's the maximum allowed by
+        # Salesforce.com
+        x = 0
+        res = []
+        while x < len(sObjectTypes):
+            try:
+                res.extend(self._getClient().describeSObjects(sObjectTypes[x:x+100]))
+            except SessionTimeoutError:
+                self._resetClient()
+                res.extend(self._getClient().describeSObjects(sObjectTypes[x:x+100]))
+            x += 100
+        return res
+
     security.declareProtected(SalesforceRead, 'queryMore')
     def queryMore(self, queryLocator):
         """See .interfaces.salesforcebaseconnector

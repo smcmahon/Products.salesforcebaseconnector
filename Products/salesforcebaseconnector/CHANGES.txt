@@ -1,9 +1,11 @@
 Change history
 ==============
 
-1.2 (unreleased)
+1.1.2 (unreleased)
 
-
+ - Call describeSObjects in batches of 100 object types (Salesforce.com
+   limit in recent versions of the API).
+   [davisagli]
 
 1.1.1 (2009-05-13)
 
