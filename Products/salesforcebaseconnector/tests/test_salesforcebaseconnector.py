@@ -233,6 +233,15 @@ class TestBaseConnectorBeatboxInteraction(Functional, SalesforceBaseConnectorTes
         self.failUnless(res['done'])
         self.assertEqual(len(res['records']), 50)
 
+    def test_search(self):
+        svc = self.toolbox
+        res = svc.search("FIND {barr} in ALL FIELDS RETURNING Contact(Id, Birthdate)")
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].type, 'Contact')
+        self.assertEqual(type(res[0].Birthdate), datetime.date)
+        
+        res = svc.search("FIND {khgkshgsuhalsf} in ALL FIELDS RETURNING Contact(Id)")
+        self.assertEqual(len(res), 0)
 
     def test_setBatchSize(self):
         """Test that we can set maximum number of results in a single results

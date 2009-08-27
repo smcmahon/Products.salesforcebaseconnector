@@ -3,6 +3,8 @@ Change history
 
 1.2 (unreleased)
 
+ - Added the search method from beatbox 16.0.
+
  - Modified the method signature of the query method to match beatbox and the
    Salesforce.com API.  Now a single full SOQL statement is expected, rather
    than the old 3-part field list, sObject type, and optional where clause.

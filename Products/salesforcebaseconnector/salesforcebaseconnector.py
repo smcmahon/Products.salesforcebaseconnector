@@ -210,6 +210,11 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
             soql += ' WHERE %s' % (whereClause)
         return self._query(soql)
 
+    security.declareProtected(SalesforceRead, 'search')
+    @recover_from_session_timeout
+    def search(self, sosl):
+        return self.client.search(sosl)
+
     security.declareProtected(SalesforceRead, 'describeGlobal')
     @recover_from_session_timeout
     def describeGlobal(self):
