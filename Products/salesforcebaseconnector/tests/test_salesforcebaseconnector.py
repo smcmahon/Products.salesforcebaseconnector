@@ -1,5 +1,5 @@
 from zExceptions import Unauthorized
-from beatbox import SoapFaultError
+from beatbox import SoapFaultError, PythonClient
 from base import SalesforceBaseConnectorTestCase
 from Products.salesforcebaseconnector.interfaces.salesforcebaseconnector import ISalesforceBaseConnector, \
         ISalesforceBaseConnectorInfo, SalesforceRead, SalesforceWrite
@@ -7,6 +7,7 @@ from Products.salesforcebaseconnector.salesforcebaseconnector import SalesforceB
 from zope.interface.verify import verifyClass
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import _checkPermission as checkPermission
+from Testing.ZopeTestCase import Functional
 import datetime
 
 # be sure to set USERNAME/PASSWORD for test config
@@ -86,7 +87,7 @@ class TestSalesforceBaseConnector(SalesforceBaseConnectorTestCase):
         testServerUrl = 'https://www.salesforce.com/services/Soap/u/8.0'
         self.failUnless(self.toolbox.setCredentials(sfconfig.USERNAME, sfconfig.PASSWORD, serverUrl=testServerUrl))
 
-class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
+class TestBaseConnectorBeatboxInteraction(Functional, SalesforceBaseConnectorTestCase):
     """docstring for SF methods"""
 
     def afterSetUp(self):
@@ -104,6 +105,10 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
                 self.toolbox.delete(ids[:200])
                 ids = ids[200:]
             self.toolbox.delete(ids)
+
+    def test_client(self):
+        self.failUnless(isinstance(self.toolbox.client, PythonClient))
+        self.assertEqual(self.publish('/plone/portal_salesforcebaseconnector/client').status, 404)
 
     def test_query(self):
         """Test a very basic query with a condition (a "where" clause)"""
@@ -328,7 +333,7 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
         pass
     
     def testFlushTypeDescriptionCache(self):
-        svc = self.toolbox._getClient()
+        svc = self.toolbox.client
         svc.typeDescs = 'foobar'
         self.toolbox.manage_flushTypeDescriptionCache()
         self.assertEqual(svc.typeDescs, {})

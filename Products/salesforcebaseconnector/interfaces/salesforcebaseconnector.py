@@ -13,7 +13,11 @@ class ISalesforceBaseConnectorInfo(Interface):
     """Defines a READ ONLY interface for Salesforce
     """
     id = Attribute('id','Must be set to "portal_salesforcebaseconnector"')
-        
+    
+    client = Attribute('client', "Returns this thread's current beatbox "
+        "client providing a connection to Salesforce.com, or opens a new "
+        "one using the stored credentials.")
+
     def describeGlobal():
         '''Retrieves list of available object Types
         (Account, Opportunity, etc., including custom

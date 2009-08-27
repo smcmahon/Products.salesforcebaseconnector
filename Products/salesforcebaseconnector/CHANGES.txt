@@ -3,6 +3,14 @@ Change history
 
 1.2 (unreleased)
 
+ - Refactored the session timeout handling to use a
+   'recover_from_session_timeout' decorator to avoid code repetition.
+   [davisagli]
+
+ - Replaced the _getClient method with a property called client.
+   _getClient is now deprecated.
+   [davisagli]
+
  - Added button in ZMI to flush the beatbox type description cache.
    [davisagli]
 
