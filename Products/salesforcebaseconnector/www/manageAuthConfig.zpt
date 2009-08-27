@@ -39,4 +39,17 @@
      value=" Test/store Salesforce credentials " />
     </div>
 </form>
+
+<h3>sObject type information cache</h3>
+
+salesforcebaseconnector caches certain information about the types available in
+Salesforce.com in order to know what Python types to use to correspond to fields
+in Salesforce.com.  If you add, edit, or remove fields from an object type in
+Salesforce.com, you should purge this cache in order for salesforcebaseconnector
+to use the new schema.
+
+<form action="manage_flushTypeDescriptionCache" method="POST">
+  <input type="submit" name="submit" value="Purge cache"/>
+</form>
+
 <tal:block tal:replace="structure here/manage_page_footer" />

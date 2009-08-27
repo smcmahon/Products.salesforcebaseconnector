@@ -109,6 +109,14 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         # Disconnect from any previously connected Salesforce instance
         self._resetClient()
         return True
+    
+    security.declareProtected(ManagePortal, 'manage_flushTypeDescriptionCache')
+    def manage_flushTypeDescriptionCache(self, REQUEST=None):
+        """Purge beatbox's cache of field types for marshalling SF responses"""
+        self._getClient().flushTypeDescriptionsCache()
+        if REQUEST is not None:
+            REQUEST.RESPONSE.redirect('%s/manage_config?portal_status_message=%s' %
+                (self.absolute_url(), 'sObject type information purged.'))
 
     security.declareProtected(ManagePortal, 'setBatchSize')
     def setBatchSize(self, batchsize):

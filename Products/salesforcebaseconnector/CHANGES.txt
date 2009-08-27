@@ -1,7 +1,13 @@
 Change history
 ==============
 
-1.1.2 (unreleased)
+1.2 (unreleased)
+
+ - Added button in ZMI to flush the beatbox type description cache.
+   [davisagli]
+
+ - beatbox 16.0dev or greater is now required.
+   [davisagli]
 
  - Call describeSObjects in batches of 100 object types (Salesforce.com
    limit in recent versions of the API).

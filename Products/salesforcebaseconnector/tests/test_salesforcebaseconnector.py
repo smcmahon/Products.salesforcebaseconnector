@@ -327,6 +327,11 @@ class TestBaseConnectorBeatboxInteraction(SalesforceBaseConnectorTestCase):
         # retrieve is ALSO tested implicitly in the above tests
         pass
     
+    def testFlushTypeDescriptionCache(self):
+        svc = self.toolbox._getClient()
+        svc.typeDescs = 'foobar'
+        self.toolbox.manage_flushTypeDescriptionCache()
+        self.assertEqual(svc.typeDescs, {})
 
 
 class TestBaseConnectorConfiguration(SalesforceBaseConnectorTestCase):
@@ -347,7 +352,6 @@ class TestBaseConnectorConfiguration(SalesforceBaseConnectorTestCase):
         # confirming we can getUsername and getPassword from ./www/manageAuthConfig.zpt
         _ = self.toolbox.manage_config()
         self.failUnless(_)
-    
 
 
 def test_suite():
