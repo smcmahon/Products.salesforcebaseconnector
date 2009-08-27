@@ -89,7 +89,10 @@ class ISalesforceBaseConnectorInfo(Interface):
            if a complete result set has been return. If 'done' is false, 
            queryMore() will return the next batch of results.
         '''
-        
+    
+    def search(sosl):
+        """Execute a fulltext search using SOSL and return a set of results."""
+
     def retrieve(fields, sObjectType, ids):
         '''Retrieve record(s) in Salesforce based on one SF Object ID's.
            This method always returns a list, even if only one ID is
@@ -97,8 +100,8 @@ class ISalesforceBaseConnectorInfo(Interface):
         >>> sbc = portal.portal_salesforcebaseconnector 
         >>> sbc.retrieve(['FirstName','Id'],'Contact','0033000000JKDFxAAP')
             or
-        >>> sbc.retrieve(['FirstName','Id'],'Contact',['0033000000JKDFxAAP'])         
-        [{'Id': '0033000000JKDFxAAP', 'FirstName': 'Siddartha'}]                
+        >>> sbc.retrieve(['FirstName','Id'],'Contact',['0033000000JKDFxAAP'])
+        [{'Id': '0033000000JKDFxAAP', 'FirstName': 'Siddartha'}]
         '''
         
     def getDeleted(sObjectType, start, end):
