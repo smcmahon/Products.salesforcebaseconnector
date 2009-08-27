@@ -3,6 +3,12 @@ Change history
 
 1.2 (unreleased)
 
+ - Modified the method signature of the query method to match beatbox and the
+   Salesforce.com API.  Now a single full SOQL statement is expected, rather
+   than the old 3-part field list, sObject type, and optional where clause.
+   The old method signature is deprecated but should still work for now.
+   [davisagli]
+
  - Refactored the session timeout handling to use a
    'recover_from_session_timeout' decorator to avoid code repetition.
    [davisagli]

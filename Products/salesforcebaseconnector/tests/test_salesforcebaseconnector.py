@@ -136,8 +136,8 @@ class TestBaseConnectorBeatboxInteraction(Functional, SalesforceBaseConnectorTes
                          'Contact',
                          "LastName = 'Doe'")
         self.assertEqual(res['size'], 2)
-        res = svc.query(['Id', 'LastName', 'FirstName', 'Phone', 'Email', 'Birthdate'],
-                         'Contact', "LastName = 'Doe' and FirstName = 'Jane'")
+        res = svc.query("SELECT Id, LastName, FirstName, Phone, Email, Birthdate "
+                        "FROM Contact WHERE LastName = 'Doe' and FirstName = 'Jane'")
         self.assertEqual(res['size'], 1)
         self.assertEqual(res['records'][0]['Id'], janeid)
 

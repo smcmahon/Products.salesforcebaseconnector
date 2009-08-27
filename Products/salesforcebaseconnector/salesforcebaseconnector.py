@@ -76,9 +76,9 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     
     def _getClient(self):
         # BBB
-        logger.debug('The _getClient method of the salesforcebaseconnector '
-                     'has been deprecated. Please use the client attribute '
-                     'instead.')
+        logger.warn('The _getClient method of the salesforcebaseconnector '
+                    'has been deprecated. Please use the client attribute '
+                    'instead.')
         return self.client
 
     security.declarePrivate('client')
@@ -184,27 +184,37 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     
     ## Accessors
     security.declareProtected(SalesforceRead, 'query')
-    def query(self, fieldList, sObjectType, whereClause=''):
-        logger.debug('calling query()')
+    def query(self, *args, **kw):
+        if len(args) > 1:
+            # BBB for old method signature
+            return self._BBBquery(*args, **kw)
+
+        soql = args[0]
+        return self._query(soql)
+
+    @recover_from_session_timeout
+    def _query(self, soql):
+        return self.client.query(soql)
+    
+    def _BBBquery(self, fieldList, sObjectType, whereClause=''):
+        # BBB for old method signature
+        logger.warn('Called query with deprecated 3-parameter style.  Please '
+                    'pass a full SOQL query instead.')
         if sObjectType is None:
             raise ValueError, "Invalid argument: sObjectType must not be None"
         if not fieldList:
             raise ValueError, "Invalid argument: must pass list of desired fields"
-            
         fieldString = ','.join(fieldList)
-        try:
-            result = self.client.query(fieldString, sObjectType, whereClause)
-        except SessionTimeoutError:
-            self._resetClient()
-            result = self.client.query(fieldString, sObjectType, whereClause)
-            
-        return result
-    
+        soql = 'SELECT %s from %s' % (fieldString, sObjectType)
+        if whereClause:
+            soql += ' WHERE %s' % (whereClause)
+        return self._query(soql)
+
     security.declareProtected(SalesforceRead, 'describeGlobal')
     @recover_from_session_timeout
     def describeGlobal(self):
         return self.client.describeGlobal()
-        
+
     security.declareProtected(SalesforceRead, 'describeSObjects')
     def describeSObjects(self, sObjectTypes):
         logger.debug('calling describeSObjects')
@@ -213,13 +223,13 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         x = 0
         res = []
         while x < len(sObjectTypes):
-            try:
-                res.extend(self.client.describeSObjects(sObjectTypes[x:x+100]))
-            except SessionTimeoutError:
-                self._resetClient()
-                res.extend(self.client.describeSObjects(sObjectTypes[x:x+100]))
+            res.extend(self._describeSObjects(sObjectTypes[x:x+100]))
             x += 100
         return res
+
+    @recover_from_session_timeout
+    def _describeSObjects(self, sObjectTypes):
+        return self.client.describeSObjects(sObjectTypes)
 
     security.declareProtected(SalesforceRead, 'queryMore')
     @recover_from_session_timeout
@@ -228,16 +238,14 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
 
     security.declareProtected(SalesforceRead, 'retrieve')
     def retrieve(self, fields, sObjectType, ids):
-        logger.debug('calling retrieve')
         fieldString = ''
         if fields:
             fieldString = ','.join(fields)
-        try:
-            result = self.client.retrieve(fieldString, sObjectType, ids)
-        except SessionTimeoutError:
-            self._resetClient()
-            result = self.client.retrieve(fieldString, sObjectType, ids)
-        return result
+        return self._retrieve(fieldString, sObjectType, ids)
+
+    @recover_from_session_timeout
+    def _retrieve(self, fieldString, sObjectType, ids):
+        return self.client.retrieve(fieldString, sObjectType, ids)
 
     security.declareProtected(SalesforceRead, 'getDeleted')
     @recover_from_session_timeout
