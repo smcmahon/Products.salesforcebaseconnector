@@ -71,11 +71,11 @@ class ISalesforceBaseConnectorInfo(Interface):
          'urlNew': 'https://na1.salesforce.com/003/e'}
         '''
         
-    def query(fields, sObjectType, conditionExpression=''):
+    def query(soql):
         """Run a SoQL query against a Salesforce instance, and returns
         a dict as a result set.
         >>> sbc = portal.portal_salesforcebaseconnector 
-        >>> sbc.query(['FirstName',],'Contact',"FirstName='Stella'")
+        >>> sbc.query("SELECT UserName__c FROM Contact WHERE FirstName='Joe'")
         {'records': [{'Id': '0037000000TAERdAAP', 'UserName__c': 'joe'}],
          'done': True, 
          'queryLocator': <beatbox.python_client.QueryLocator object at ...>, 
