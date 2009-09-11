@@ -88,8 +88,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
            a new one using the stored credentials."""
         if not hasattr(self, '_v_sfclient') or self._v_sfclient is None:
             logger.debug('Creating new beatbox Python client')
-            self._v_sfclient = SalesforceClient(serverUrl = self.serverUrl,
-                                                cacheTypeDescriptions = True)
+            self._v_sfclient = SalesforceClient(serverUrl = self.serverUrl)
         if not self._v_sfclient.isConnected():
             logger.debug('No open connection to Salesforce. Trying to log in...')
             response = self._login()

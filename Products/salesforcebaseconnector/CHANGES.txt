@@ -1,14 +1,6 @@
 Change history
 ==============
 
-1.2b2 (2009-09-11)
-
- - Enabled the beatbox type descriptions cache.  If you edit the schema of
-   an object in Salesforce, you'll need to either go to
-   portal_salesforcebaseconnector and press the 'Purge cache' button,
-   or restart Zope.
-   [davisagli]
-
 1.2b1 (2009-09-08)
 
  - Added the search method from beatbox 16.0.
