@@ -1,6 +1,9 @@
 Change history
 ==============
 
+1.2 (unreleased)
+
+
 1.2b2 (2009-09-11)
 
  - Enabled the beatbox type descriptions cache.  If you edit the schema of
