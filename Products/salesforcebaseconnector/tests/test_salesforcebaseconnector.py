@@ -7,6 +7,7 @@ from Products.salesforcebaseconnector.salesforcebaseconnector import SalesforceB
 from zope.interface.verify import verifyClass
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import _checkPermission as checkPermission
+from Products.PageTemplates.Expressions import getEngine
 from Testing.ZopeTestCase import Functional
 import datetime
 
@@ -346,7 +347,18 @@ class TestBaseConnectorBeatboxInteraction(Functional, SalesforceBaseConnectorTes
         svc.typeDescs = 'foobar'
         self.toolbox.manage_flushTypeDescriptionCache()
         self.assertEqual(svc.typeDescs, {})
+    
+    def testCanAccessResultsFromRestrictedPython(self):
+        # user without the SalesforceRead permission can't query
+        expr = 'python:context.portal_salesforcebaseconnector.query("SELECT Id FROM Contact")[0]'
+        engine = getEngine()
+        econtext = engine.getContext({'context': self.portal})
+        self.assertRaises(Unauthorized, getEngine().compile(expr), econtext)
 
+        # user with the SalesforceRead permission can query and access result
+        self.setRoles(['Manager'])
+        res = getEngine().compile(expr)(econtext)
+        self.failUnless(len(res))
 
 class TestBaseConnectorConfiguration(SalesforceBaseConnectorTestCase):
     def afterSetUp(self):
