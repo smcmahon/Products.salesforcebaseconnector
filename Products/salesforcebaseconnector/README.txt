@@ -40,6 +40,8 @@ your own Plone/Salesforce applications.
 Dependencies
 ============
 
+Compatible with Zope 2.9, 2.10, 2.11, and 2.12.
+
 Depends upon the Beatbox library, which is a Python wrapper to the
 Salesforce.com API (version 16.0).  Beatbox 16.0 or greater is required.
 
@@ -113,10 +115,10 @@ Credits
 
 The Plone & Salesforce crew in Seattle and Portland:
 
-- Jon Baldivieso <jonb --AT-- onenw --DOT-- org>
-- Andrew Burkhalter <andrewb --AT-- onenw --DOT-- org>
+- Jon Baldivieso <jonb --AT-- groundwire --DOT-- org>
+- Andrew Burkhalter <andrewburkhalter --AT-- gmail --DOT-- com>
 - Brian Gershon <briang --AT-- webcollective --DOT-- coop>
-- David Glick <davidglick --AT-- onenw --DOT-- org> 
+- David Glick <davidglick --AT-- groundwire --DOT-- org> 
 - Jesse Snyder <jesses --AT-- npowerseattle --DOT-- org>
 
 Jesse Snyder and NPower Seattle for the foundation of code that has become
