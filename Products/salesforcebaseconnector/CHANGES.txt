@@ -3,6 +3,11 @@ Change history
 
 1.2 (unreleased)
 
+ - Avoid deprecated import from Globals in Zope 2.12.
+   [davisagli]
+
+ - Confirmed compatibility with Plone 4.
+   [davisagli]
 
 1.2b2 (2009-09-11)
 

@@ -1,6 +1,0 @@
-==========
-TODO ITEMS
-==========
-
-[ ] Figure out where (i.e. base connector or beatbox) whitespace is being normalized 
-    when retrieved from Salesforce.com

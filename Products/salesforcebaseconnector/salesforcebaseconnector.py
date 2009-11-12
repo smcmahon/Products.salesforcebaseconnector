@@ -10,7 +10,11 @@ from zope.interface import implements
 ## Plone imports
 from Products.CMFCore.utils import UniqueObject
 from OFS.SimpleItem import SimpleItem
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass
+except ImportError:
+    # Zope 2.9
+    from Globals import InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from AccessControl import ClassSecurityInfo
 from Products.CMFCore.permissions import ManagePortal
