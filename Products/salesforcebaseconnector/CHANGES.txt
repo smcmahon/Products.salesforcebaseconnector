@@ -1,7 +1,7 @@
 Change history
 ==============
 
-1.2 (unreleased)
+1.2 (2009-11-12)
 
  - Make sure that QueryRecords can be accessed from Restricted Python.
    This fixes http://plone.org/products/salesforcebaseconnector/issues/6
