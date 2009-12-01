@@ -3,6 +3,10 @@ Change history
 
 1.2.1 (unreleased)
 
+ - Make sure that item access to QueryRecord objects is allowed from Restricted
+   Python.
+   [davisagli]
+
  - Make sure that QueryRecordSets can be accessed from Restricted Python.
    [davisagli]
 

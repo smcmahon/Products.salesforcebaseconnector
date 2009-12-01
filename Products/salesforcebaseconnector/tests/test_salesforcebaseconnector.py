@@ -363,6 +363,10 @@ class TestBaseConnectorBeatboxInteraction(Functional, SalesforceBaseConnectorTes
         expr = 'python:context.portal_salesforcebaseconnector.query("SELECT Id FROM Contact")["records"][0]'
         res = getEngine().compile(expr)(econtext)
         self.failUnless(res)
+        
+        expr = 'python:context.portal_salesforcebaseconnector.query("SELECT Id FROM Contact")["records"][0]["Id"]'
+        res = getEngine().compile(expr)(econtext)
+        self.failUnless(res)
 
 
 class TestBaseConnectorConfiguration(SalesforceBaseConnectorTestCase):
