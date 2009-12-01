@@ -359,6 +359,11 @@ class TestBaseConnectorBeatboxInteraction(Functional, SalesforceBaseConnectorTes
         self.setRoles(['Manager'])
         res = getEngine().compile(expr)(econtext)
         self.failUnless(len(res))
+        
+        expr = 'python:context.portal_salesforcebaseconnector.query("SELECT Id FROM Contact")["records"][0]'
+        res = getEngine().compile(expr)(econtext)
+        self.failUnless(res)
+
 
 class TestBaseConnectorConfiguration(SalesforceBaseConnectorTestCase):
     def afterSetUp(self):

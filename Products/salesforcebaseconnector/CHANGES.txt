@@ -1,6 +1,11 @@
 Change history
 ==============
 
+1.2.1 (unreleased)
+
+ - Make sure that QueryRecordSets can be accessed from Restricted Python.
+   [davisagli]
+
 1.2 (2009-11-12)
 
  - Make sure that QueryRecords can be accessed from Restricted Python.

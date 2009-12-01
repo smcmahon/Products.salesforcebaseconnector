@@ -22,7 +22,10 @@ def initialize(context):
                     icon='www/salesforce.png'
                     ).initialize( context )
 
-    # initialize security for the QueryResult class from beatbox
+    # initialize security for the QueryResult and QueryRecordSet classes from beatbox
     beatbox.python_client.QueryRecord.security = security = ClassSecurityInfo()
     security.declareObjectPublic()
     InitializeClass(beatbox.python_client.QueryRecord)
+    beatbox.python_client.QueryRecordSet.security = security = ClassSecurityInfo()
+    security.declareObjectPublic()
+    InitializeClass(beatbox.python_client.QueryRecordSet)
