@@ -1,7 +1,11 @@
 Change history
 ==============
 
-1.2.1 (unreleased)
+1.3 (unreleased)
+
+ - Add a validateCredentials method that can be used from a remote monitor to
+   confirm that the base connector is still able to connect to Salesforce.
+   [davisagli]
 
  - Make sure that item access to QueryRecord objects is allowed from Restricted
    Python.

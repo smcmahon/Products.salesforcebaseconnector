@@ -104,6 +104,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     def _resetClient(self):
         logger.debug('reseting client')
         self._v_sfclient = None
+        self._v_valid = None
 
     security.declareProtected(ManagePortal, 'manage_configSalesforceCredentials')
     def manage_configSalesforceCredentials(self, username, password, REQUEST=None, serverUrl=None):
@@ -138,6 +139,23 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         # Disconnect from any previously connected Salesforce instance
         self._resetClient()
         return True
+    
+    security.declarePublic('validateCredentials')
+    def validateCredentials(self):
+        """Method that can be called by a remote monitor to confirm that the
+        configured credentials are still valid.
+        """
+        valid = getattr(self, '_v_valid', None)
+        if valid is None:
+            valid = True
+            try:
+                testClient = SalesforceClient(serverUrl=self.serverUrl)
+                testClient.login(self._username, self._password)
+            except:
+                valid = False
+            self._v_valid = valid
+        if valid:
+            return 'OK'
     
     security.declareProtected(ManagePortal, 'manage_flushTypeDescriptionCache')
     def manage_flushTypeDescriptionCache(self, REQUEST=None):

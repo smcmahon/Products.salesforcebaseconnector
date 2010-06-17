@@ -58,6 +58,12 @@ class TestSalesforceBaseConnector(SalesforceBaseConnectorTestCase):
         self.assertRaises(SoapFaultError, self.toolbox.setCredentials,
             'username_supercalifragilisticexpialidocious', 'password_supercalifragilisticexpialidocious')
 
+    def testValidateCredentials(self):
+        self.assertEquals('OK', self.toolbox.validateCredentials())
+        self.toolbox._password = 'BOGUS'
+        self.toolbox._resetClient()
+        self.failIf(self.toolbox.validateCredentials())
+
     def testBaseConnectorSecurity(self):
         """ None of the base connector's attributes should be publicly traversable.
         """
