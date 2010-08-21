@@ -10,7 +10,8 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import _checkPermission as checkPermission
 from Products.PageTemplates.Expressions import getEngine
 from Testing.ZopeTestCase import Functional
-from Products.PloneTestCase.layer import PloneSite
+from Products.CMFTestCase.CMFTestCase import CMFTestCase
+from Products.CMFTestCase.layer import CMFSite
 import datetime
 
 class TestSalesforceBaseConnector(SalesforceBaseConnectorTestCase):
@@ -352,9 +353,9 @@ class TestBaseConnectorBeatboxInteraction(Functional, SalesforceBaseConnectorTes
         self.failUnless(res)
 
 
-class TestBaseConnectorConfiguration(SalesforceBaseConnectorTestCase):
+class TestBaseConnectorConfiguration(CMFTestCase):
 
-    layer = PloneSite
+    layer = CMFSite
 
     def afterSetUp(self):
         """docstring for afterSetUp"""
