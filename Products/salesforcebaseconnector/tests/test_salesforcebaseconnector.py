@@ -4,23 +4,16 @@ from base import SalesforceBaseConnectorTestCase
 from Products.salesforcebaseconnector.interfaces.salesforcebaseconnector import ISalesforceBaseConnector, \
         ISalesforceBaseConnectorInfo, SalesforceRead, SalesforceWrite
 from Products.salesforcebaseconnector.salesforcebaseconnector import SalesforceBaseConnector
+from Products.salesforcebaseconnector.tests import sfconfig
 from zope.interface.verify import verifyClass
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import _checkPermission as checkPermission
 from Products.PageTemplates.Expressions import getEngine
 from Testing.ZopeTestCase import Functional
+from Products.CMFTestCase.layer import CMFSite
 import datetime
 
-# be sure to set USERNAME/PASSWORD for test config
-from Products.salesforcebaseconnector.tests import sfconfig
-
 class TestSalesforceBaseConnector(SalesforceBaseConnectorTestCase):
-    def afterSetUp(self):
-        """docstring for afterSetUp"""
-        self.portal.manage_addProduct['salesforcebaseconnector'].manage_addTool('Salesforce Base Connector', None)
-        self.toolbox = getToolByName(self.portal, "portal_salesforcebaseconnector")
-        self.toolbox.setCredentials(sfconfig.USERNAME, sfconfig.PASSWORD)
-        self._todelete = list() # keep track of ephemeral test data to delete
 
     def testInterface(self):
         """ Some basic boiler plate testing of Interfaces and objects"""
@@ -96,23 +89,7 @@ class TestSalesforceBaseConnector(SalesforceBaseConnectorTestCase):
 
 class TestBaseConnectorBeatboxInteraction(Functional, SalesforceBaseConnectorTestCase):
     """docstring for SF methods"""
-
-    def afterSetUp(self):
-        """docstring for afterSetUp"""
-        self.portal.manage_addProduct['salesforcebaseconnector'].manage_addTool('Salesforce Base Connector', None)
-        self.toolbox = getToolByName(self.portal, "portal_salesforcebaseconnector")
-        self.toolbox.setCredentials(sfconfig.USERNAME, sfconfig.PASSWORD)
-        self._todelete = list() # keep track of ephemeral test data to delete
     
-    def beforeTearDown(self):
-        """clean up SF data"""
-        ids = self._todelete
-        if ids:
-            while len(ids) > 200:
-                self.toolbox.delete(ids[:200])
-                ids = ids[200:]
-            self.toolbox.delete(ids)
-
     def test_client(self):
         self.failUnless(isinstance(self.toolbox.client, PythonClient))
         self.assertEqual(self.publish('/plone/portal_salesforcebaseconnector/client').status, 404)
@@ -376,6 +353,9 @@ class TestBaseConnectorBeatboxInteraction(Functional, SalesforceBaseConnectorTes
 
 
 class TestBaseConnectorConfiguration(SalesforceBaseConnectorTestCase):
+
+    layer = CMFSite
+
     def afterSetUp(self):
         """docstring for afterSetUp"""
         
