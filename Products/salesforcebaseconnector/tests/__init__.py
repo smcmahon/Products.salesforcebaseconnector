@@ -9,7 +9,8 @@ except ImportError:
     password = raw_input('Password? ')
     token = raw_input('Token? ')
     
-    sfconfig = open(os.path.join(os.path.dirname(__file__), 'sfconfig.py'))
+    sfconfig = open(os.path.join(os.path.dirname(__file__), 'sfconfig.py'), 'w')
     sfconfig.write("USERNAME='%s'\nPASSWORD='%s%s'" %
         tuple([s.replace("'", r"\'") for s in (username, password, token)]))
+    sfconfig.close()
     from Products.salesforcebaseconnector.tests import sfconfig

@@ -1,16 +1,16 @@
-"""Base class for integration tests, based on ZopeTestCase and CMFTestCase.
+"""Base class for integration tests, based on ZopeTestCase and PloneTestCase.
 
 Note that importing this module has various side-effects: it registers a set of
 products with Zope, and it sets up a sandbox CMFSite site with the appropriate
 products installed.
 """
 
-from Products.CMFTestCase import CMFTestCase
+from Products.PloneTestCase import PloneTestCase
 from Products.salesforcebaseconnector.tests.layer import SalesforceLayer
 
-CMFTestCase.setupCMFSite()
+PloneTestCase.setupPloneSite()
 
-class SalesforceBaseConnectorTestCase(CMFTestCase.CMFTestCase):
+class SalesforceBaseConnectorTestCase(PloneTestCase.PloneTestCase):
     """Base class for integration tests for the 'salesforcebaseconnector' product.
     """
 
@@ -22,6 +22,8 @@ class SalesforceBaseConnectorTestCase(CMFTestCase.CMFTestCase):
 
     def beforeTearDown(self):
         """clean up SF data"""
+        if not hasattr(self, '_todelete'):
+            return
         ids = self._todelete
         if ids:
             while len(ids) > 200:
