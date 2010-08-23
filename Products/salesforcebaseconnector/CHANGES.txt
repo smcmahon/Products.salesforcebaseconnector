@@ -1,6 +1,12 @@
 Change history
 ==============
 
+1.4 (2010-08-23)
+
+ - Store clients on the ZODB connection object rather than in a volatile
+   attribute.
+   [davisagli]
+
 1.3 (2010-06-17)
 
  - Add a validateCredentials method that can be used from a remote monitor to

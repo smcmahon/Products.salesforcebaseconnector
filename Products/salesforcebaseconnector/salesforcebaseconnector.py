@@ -48,10 +48,11 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     serverUrl = None
     defaultServerUrl = DEFAULT_SERVER_URL
     
+    _v_temp_client = None
+    
     def __init__(self):
         self._username = ''
         self._password = ''
-        self._v_sfclient = None
     
     id = 'portal_salesforcebaseconnector'
     meta_type = 'Salesforce Base Connector'
@@ -70,12 +71,11 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     manage_config = PageTemplateFile('www/manageAuthConfig', globals() )
     manage_config._owner = None
 
-
     def _login(self):
+        # deprecated
         logger.debug('logging into salesforce...')
-        username = self._username
-        passwd = self._password
-        res = self._v_sfclient.login(username, passwd)
+        client = self._client
+        res = client.login(self._username, self._password)
         return res
     
     def _getClient(self):
@@ -85,25 +85,52 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
                     'instead.')
         return self.client
 
+    @property
+    def _client(self):
+        # Clients with open connections are stored on the ZODB database
+        # connection. This approach is based on alm.solrindex. See its
+        # documentation for a full explanation.
+        
+        jar = self._p_jar
+        oid = self._p_oid
+        
+        if jar is None or oid is None:
+            # Not yet registered in the ZODb, so use a volatile attribute
+            client = self._v_temp_client
+            if client is None:
+                self._v_temp_client = client = SalesforceClient(serverUrl = self.serverUrl,
+                                                                cacheTypeDescriptions = True)
+        else:
+            foreign_connections = getattr(jar, 'foreign_connections', None)
+            if foreign_connections is None:
+                jar.foreign_connections = foreign_connections = {}
+            client = foreign_connections.get(oid)
+            if client is None:
+                foreign_connections[oid] = client = SalesforceClient(serverUrl = self.serverUrl,
+                                                                     cacheTypeDescriptions = True)
+        return client
+
     security.declarePrivate('client')
     @property
     def client(self):
         """Returns this thread's current Salesforce.com connection, or opens
            a new one using the stored credentials."""
-        if not hasattr(self, '_v_sfclient') or self._v_sfclient is None:
-            logger.debug('Creating new beatbox Python client')
-            self._v_sfclient = SalesforceClient(serverUrl = self.serverUrl,
-                                                cacheTypeDescriptions = True)
-        if not self._v_sfclient.isConnected():
-            logger.debug('No open connection to Salesforce. Trying to log in...')
-            response = self._login()
-            if not response:
-                raise "Salesforce login failed"
-        return self._v_sfclient
+        client = self._client
+        if not client.isConnected():
+             logger.debug('No open connection to Salesforce. Trying to log in...')
+             response = client.login(self._username, self._password)
+             if not response:
+                 raise "Salesforce login failed"
+        
+        return client
 
     def _resetClient(self):
-        logger.debug('reseting client')
-        self._v_sfclient = None
+        logger.debug('resetting client')
+        self._v_temp_client = None
+        if self._p_jar and self._p_oid:
+            foreign_connections = getattr(self._p_jar, 'foreign_connections', None)
+            if foreign_connections is not None and self._p_oid in foreign_connections:
+                del foreign_connections[self._p_oid]
         self._v_valid = None
 
     security.declareProtected(ManagePortal, 'manage_configSalesforceCredentials')
