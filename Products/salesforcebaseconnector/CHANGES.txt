@@ -1,6 +1,12 @@
 Change history
 ==============
 
+1.5 (unreleased)
+
+ - Add a Call Log tab in the ZMI to show the most recent 20 calls.
+   (Only works on Python 2.6+)
+   [davisagli]
+
 1.4 (2010-08-23)
 
  - Store clients on the ZODB connection object rather than in a volatile

@@ -1,6 +1,7 @@
 ## Python imports
 import logging
 import urllib
+import sys
 from beatbox import PythonClient as SalesforceClient
 from beatbox import SessionTimeoutError, DEFAULT_SERVER_URL
 
@@ -23,7 +24,14 @@ from Products.CMFCore.permissions import ManagePortal
 from interfaces.salesforcebaseconnector import ISalesforceBaseConnector, ISalesforceBaseConnectorInfo, \
     SalesforceRead, SalesforceWrite
 
+try:
+    from collections import deque
+    CALL_LOG = deque(maxlen=20)
+except:
+    CALL_LOG = None
+
 logger = logging.getLogger('SalesforceBaseConnector')
+
 
 def recover_from_session_timeout(func):
     """Decorator for SalesforceBaseConnector methods.  Calls a Salesforce.com
@@ -32,10 +40,19 @@ def recover_from_session_timeout(func):
     def try_twice(self, *args, **kw):
         logger.debug('Calling %s' % func.__name__)
         try:
-            return func(self, *args, **kw)
-        except SessionTimeoutError:
-            self._resetClient()
-            return func(self, *args, **kw)
+            try:
+                res = func(self, *args, **kw)
+            except SessionTimeoutError:
+                self._resetClient()
+                res = func(self, *args, **kw)
+            if CALL_LOG is not None:
+                CALL_LOG.append((self.REQUEST['URL'], func.__name__, repr(args), ''))
+            return res
+        except:
+            t,v,_ = sys.exc_info()
+            if CALL_LOG is not None:
+                CALL_LOG.append((self.REQUEST['URL'], func.__name__, repr(args), str(v)))
+            raise
     return try_twice
 
 
@@ -60,16 +77,25 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
 
     security = ClassSecurityInfo()
 
-    manage_options=(( { 'label' : 'Configure Authentication'
+    manage_options=( { 'label' : 'Configure Authentication'
                         , 'action' : 'manage_config'
                         },
-                      ) + SimpleItem.manage_options
-                    )
+                      )
+    if CALL_LOG is not None:
+        manage_options += ( { 'label': 'Call Log',
+                               'action': 'manage_call_log'
+                               },
+                           )
+    manage_options += SimpleItem.manage_options
     
     ##   ZMI methods
     security.declareProtected(ManagePortal, 'manage_config')
     manage_config = PageTemplateFile('www/manageAuthConfig', globals() )
     manage_config._owner = None
+    
+    security.declareProtected(ManagePortal, 'manage_call_log')
+    manage_call_log = PageTemplateFile('www/call_log', globals())
+    manage_call_log._owner = None
 
     def _login(self):
         # deprecated
@@ -191,6 +217,10 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         if REQUEST is not None:
             REQUEST.RESPONSE.redirect('%s/manage_config?portal_status_message=%s' %
                 (self.absolute_url(), 'sObject type information purged.'))
+
+    security.declareProtected(ManagePortal, 'getCallLog')
+    def getCallLog(self):
+        return reversed(CALL_LOG)
 
     security.declareProtected(ManagePortal, 'setBatchSize')
     @recover_from_session_timeout
