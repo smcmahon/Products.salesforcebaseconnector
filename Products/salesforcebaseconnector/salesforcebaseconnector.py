@@ -26,7 +26,7 @@ from interfaces.salesforcebaseconnector import ISalesforceBaseConnector, ISalesf
 
 try:
     from collections import deque
-    CALL_LOG = deque(maxlen=20)
+    CALL_LOG = deque()
 except:
     CALL_LOG = None
 
@@ -47,11 +47,15 @@ def recover_from_session_timeout(func):
                 res = func(self, *args, **kw)
             if CALL_LOG is not None:
                 CALL_LOG.append((self.REQUEST['URL'], func.__name__, repr(args), ''))
+                if len(CALL_LOG) > 20:
+                    CALL_LOG.popleft()
             return res
         except:
             t,v,_ = sys.exc_info()
             if CALL_LOG is not None:
                 CALL_LOG.append((self.REQUEST['URL'], func.__name__, repr(args), str(v)))
+                if len(CALL_LOG) > 20:
+                    CALL_LOG.popleft()
             raise
     return try_twice
 
