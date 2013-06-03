@@ -64,8 +64,13 @@ Buildout
 
  * Restart Zope.
 
- * In ZMI, add Salesforce Base Connector to root of site, then set username and
-   password. The credentials will be tested for validity before being stored.
+ * Install or activate the "SalesForce Base Connector" add-on using
+   the plone control panel, portal_setup in or portal_quickinstaller
+   in the ZMI
+
+ * In the ZMI, set the username and password in the
+   ``portal_salesforcebaseconnector`` tool. The credentials will be
+   tested for validity before being stored.
 
 Traditional Zope Product
 ------------------------
