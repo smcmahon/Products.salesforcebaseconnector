@@ -65,16 +65,16 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
        with Salesforce.com via beatbox.
     """
     implements(ISalesforceBaseConnector,ISalesforceBaseConnectorInfo)
-    
+
     serverUrl = None
     defaultServerUrl = DEFAULT_SERVER_URL
-    
+
     _v_temp_client = None
-    
+
     def __init__(self):
         self._username = ''
         self._password = ''
-    
+
     id = 'portal_salesforcebaseconnector'
     meta_type = 'Salesforce Base Connector'
     title = 'Connect to an external Salesforce instance'
@@ -91,12 +91,12 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
                                },
                            )
     manage_options += SimpleItem.manage_options
-    
+
     ##   ZMI methods
     security.declareProtected(ManagePortal, 'manage_config')
     manage_config = PageTemplateFile('www/manageAuthConfig', globals() )
     manage_config._owner = None
-    
+
     security.declareProtected(ManagePortal, 'manage_call_log')
     manage_call_log = PageTemplateFile('www/call_log', globals())
     manage_call_log._owner = None
@@ -104,10 +104,10 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     def _login(self):
         # deprecated
         logger.debug('logging into salesforce...')
-        client = self._client
-        res = client.login(self._username, self._password)
+        client = self._client()
+        res = client().login(self._username, self._password)
         return res
-    
+
     def _getClient(self):
         # BBB
         logger.warn('The _getClient method of the salesforcebaseconnector '
@@ -115,15 +115,14 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
                     'instead.')
         return self.client
 
-    @property
     def _client(self):
         # Clients with open connections are stored on the ZODB database
         # connection. This approach is based on alm.solrindex. See its
         # documentation for a full explanation.
-        
+
         jar = self._p_jar
         oid = self._p_oid
-        
+
         if jar is None or oid is None:
             # Not yet registered in the ZODb, so use a volatile attribute
             client = self._v_temp_client
@@ -141,17 +140,16 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         return client
 
     security.declarePrivate('client')
-    @property
     def client(self):
         """Returns this thread's current Salesforce.com connection, or opens
            a new one using the stored credentials."""
         client = self._client
-        if not client.isConnected():
+        if not client().isConnected():
              logger.debug('No open connection to Salesforce. Trying to log in...')
-             response = client.login(self._username, self._password)
+             response = client().login(self._username, self._password)
              if not response:
                  raise "Salesforce login failed"
-        
+
         return client
 
     def _resetClient(self):
@@ -189,14 +187,14 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
         # (will raise exception that can be handled by our caller, if invalid)
         testClient = SalesforceClient(serverUrl = serverUrl)
         testClient.login(username, password)
-        
+
         self.serverUrl = serverUrl
         self._username = username
         self._password = password
         # Disconnect from any previously connected Salesforce instance
         self._resetClient()
         return True
-    
+
     security.declarePublic('validateCredentials')
     def validateCredentials(self):
         """Method that can be called by a remote monitor to confirm that the
@@ -213,11 +211,11 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
             self._v_valid = valid
         if valid:
             return 'OK'
-    
+
     security.declareProtected(ManagePortal, 'manage_flushTypeDescriptionCache')
     def manage_flushTypeDescriptionCache(self, REQUEST=None):
         """Purge beatbox's cache of field types for marshalling SF responses"""
-        self.client.flushTypeDescriptionsCache()
+        self.client().flushTypeDescriptionsCache()
         if REQUEST is not None:
             REQUEST.RESPONSE.redirect('%s/manage_config?portal_status_message=%s' %
                 (self.absolute_url(), 'sObject type information purged.'))
@@ -230,9 +228,9 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     @recover_from_session_timeout
     def setBatchSize(self, batchsize):
         """Set the batchsize used by query and queryMore"""
-        self.client.batchSize = batchsize
-    
-    security.declareProtected(ManagePortal, 'getUsername')    
+        self.client().batchSize = batchsize
+
+    security.declareProtected(ManagePortal, 'getUsername')
     def getUsername(self):
         """Return the current stored Salesforce username"""
         return self._username
@@ -241,11 +239,11 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     def getPassword(self):
         """Return the current stored Salesforce password"""
         return self._password
-        
+
     ##
     # Convenience methods not included in Salesforce API
     # #
-    
+
     security.declareProtected(SalesforceRead, 'listFieldsRequiredForCreation')
     def listFieldsRequiredForCreation(self, sObjectType):
         """See .interfaces.salesforcebaseconnector
@@ -265,7 +263,7 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     ##
     # Salesforce API -- see .interfaces.salesforcebaseconnector
     ##
-    
+
     ## Accessors
     security.declareProtected(SalesforceRead, 'query')
     def query(self, *args, **kw):
@@ -278,8 +276,8 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
 
     @recover_from_session_timeout
     def _query(self, soql):
-        return self.client.query(soql)
-    
+        return self.client().query(soql)
+
     def _BBBquery(self, fieldList, sObjectType, whereClause=''):
         # BBB for old method signature
         logger.warn('Called query with deprecated 3-parameter style.  Please '
@@ -297,12 +295,12 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     security.declareProtected(SalesforceRead, 'search')
     @recover_from_session_timeout
     def search(self, sosl):
-        return self.client.search(sosl)
+        return self.client().search(sosl)
 
     security.declareProtected(SalesforceRead, 'describeGlobal')
     @recover_from_session_timeout
     def describeGlobal(self):
-        return self.client.describeGlobal()
+        return self.client().describeGlobal()
 
     security.declareProtected(SalesforceRead, 'describeSObjects')
     def describeSObjects(self, sObjectTypes):
@@ -318,12 +316,12 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
 
     @recover_from_session_timeout
     def _describeSObjects(self, sObjectTypes):
-        return self.client.describeSObjects(sObjectTypes)
+        return self.client().describeSObjects(sObjectTypes)
 
     security.declareProtected(SalesforceRead, 'queryMore')
     @recover_from_session_timeout
     def queryMore(self, queryLocator):
-        return self.client.queryMore(queryLocator)
+        return self.client().queryMore(queryLocator)
 
     security.declareProtected(SalesforceRead, 'retrieve')
     def retrieve(self, fields, sObjectType, ids):
@@ -334,48 +332,48 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
 
     @recover_from_session_timeout
     def _retrieve(self, fieldString, sObjectType, ids):
-        return self.client.retrieve(fieldString, sObjectType, ids)
+        return self.client().retrieve(fieldString, sObjectType, ids)
 
     security.declareProtected(SalesforceRead, 'getDeleted')
     @recover_from_session_timeout
     def getDeleted(self, sObjectType, start, end):
-        return self.client.getDeleted(sObjectType, start, end)
+        return self.client().getDeleted(sObjectType, start, end)
 
     security.declareProtected(SalesforceRead, 'getUpdated')
     @recover_from_session_timeout
     def getUpdated(self, sObjectType, start, end):
-        return self.client.getUpdated(sObjectType, start, end)
+        return self.client().getUpdated(sObjectType, start, end)
 
     security.declareProtected(SalesforceRead, 'getUserInfo')
     @recover_from_session_timeout
     def getUserInfo(self):
-        return self.client.getUserInfo()
+        return self.client().getUserInfo()
 
     security.declareProtected(SalesforceRead, 'describeTabs')
     @recover_from_session_timeout
     def describeTabs(self):
-        return self.client.describeTabs()
+        return self.client().describeTabs()
 
 
     ## Mutators
     security.declareProtected(SalesforceWrite, 'create')
     @recover_from_session_timeout
     def create(self, sObjects):
-        return self.client.create(sObjects)
+        return self.client().create(sObjects)
 
     security.declareProtected(SalesforceWrite, 'update')
     @recover_from_session_timeout
     def update(self, sObjects):
-        return self.client.update(sObjects)
+        return self.client().update(sObjects)
 
     security.declareProtected(SalesforceWrite, 'upsert')
     @recover_from_session_timeout
     def upsert(self, externalIdName, sObjects):
-        return self.client.upsert(externalIdName, sObjects)
+        return self.client().upsert(externalIdName, sObjects)
 
     security.declareProtected(SalesforceWrite, 'delete')
     @recover_from_session_timeout
     def delete(self, ids):
-        return self.client.delete(ids)
-    
+        return self.client().delete(ids)
+
 InitializeClass(SalesforceBaseConnector)
