@@ -3,6 +3,12 @@ Change history
 
 1.5 (unreleased)
 
+ - Python 2.7 doesn't like properties on old-style classes. Fixed by
+   removing property decorators and replacing property usage with
+   method calls.
+   Note: Using this package with Python 2.7 will also require beatbox > 20.0.
+   [smcmahon]
+
  - Add a Call Log tab in the ZMI to show the most recent 20 calls.
    (Only works on Python 2.6+)
    [davisagli]
@@ -88,8 +94,8 @@ Change history
  - Added option to configure the Salesforce API SOAP endpoint (server URL).
    [davisagli]
 
- - Remove deprecated parameter product_name from ToolInit call, this has been 
-   gone since before 2.5.5 which is our earliest Salesforce Base Connector 
+ - Remove deprecated parameter product_name from ToolInit call, this has been
+   gone since before 2.5.5 which is our earliest Salesforce Base Connector
    version.
    [andrewb]
 
@@ -119,7 +125,7 @@ Change history
 
  - Refactored credentials check so that invalid credentials will result in a warning
    shown to the user, rather than failing silently.  This closes issue #2. [andrewb, davisagli]
-   
+
  - Integration test suites all based on CMFTestCase and creation of CMF Site,
    rather than PloneTestCase and Plone site for performance reasons [andrewb]
 
@@ -127,18 +133,18 @@ Change history
 
  - Added new publicly supported API "listFieldsRequiredForCreation" which
    encapsulates some of the rules for which fields are required upon object
-   creation via the SOAP API for Salesforce.com.  The benefit being that 
-   additional packages need not reproduce the following, which may evolve 
+   creation via the SOAP API for Salesforce.com.  The benefit being that
+   additional packages need not reproduce the following, which may evolve
    anyway:
-   
+
      not fieldData.nillable and \
         not fieldData.defaultedOnCreate and \
         fieldData.createable
-        
+
     listFieldsRequiredForCreation accepts a Salesforce Object type as its
     lone required argument (Jesse Snyder)
 
- - Removing unneeded portal_skins FSDV (Jesse Snyder) 
+ - Removing unneeded portal_skins FSDV (Jesse Snyder)
 
  - Improved docstrings for interfaces (Jesse Snyder)
 
