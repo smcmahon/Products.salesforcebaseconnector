@@ -143,12 +143,12 @@ class SalesforceBaseConnector (UniqueObject, SimpleItem):
     def client(self):
         """Returns this thread's current Salesforce.com connection, or opens
            a new one using the stored credentials."""
-        client = self._client
-        if not client().isConnected():
-             logger.debug('No open connection to Salesforce. Trying to log in...')
-             response = client().login(self._username, self._password)
-             if not response:
-                 raise "Salesforce login failed"
+        client = self._client()
+        if not client.isConnected():
+            logger.debug('No open connection to Salesforce. Trying to log in...')
+            response = client.login(self._username, self._password)
+            if not response:
+                raise "Salesforce login failed"
 
         return client
 
